@@ -1,6 +1,6 @@
 <div align="center">
 
-<img src="common/logo.png" alt="Yeditepe University Logo" width="120"/>
+<img src="https://yeditepe.edu.tr/themes/custom/yeditepe/logo.svg" alt="Yeditepe University Logo" width="120"/>
 
 # CSE 211 — Data Structures
 ## Term Project
