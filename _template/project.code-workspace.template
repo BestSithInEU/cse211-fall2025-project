@@ -1,0 +1,413 @@
+{
+  "folders": [
+    {
+      "name": "Source Code",
+      "path": "src"
+    },
+    {
+      "name": "Headers",
+      "path": "include"
+    },
+    {
+      "name": "Tests",
+      "path": "tests"
+    },
+    {
+      "name": "Data",
+      "path": "data"
+    },
+    {
+      "name": "Scripts",
+      "path": "scripts"
+    },
+    {
+      "name": "Frontend",
+      "path": "frontend"
+    },
+    {
+      "name": "Documentation",
+      "path": "docs"
+    },
+    {
+      "name": "Project Root",
+      "path": "."
+    }
+  ],
+  "settings": {
+    "cmake.buildDirectory": "${workspaceFolder:Project Root}/build",
+    "cmake.sourceDirectory": "${workspaceFolder:Project Root}",
+    "cmake.configureOnOpen": true,
+    "cmake.configureOnEdit": true,
+    "cmake.automaticReconfigure": true,
+    "cmake.configureSettings": {
+      "CMAKE_EXPORT_COMPILE_COMMANDS": "ON",
+      "CMAKE_BUILD_TYPE": "Debug"
+    },
+    "C_Cpp.default.configurationProvider": "ms-vscode.cmake-tools",
+    "C_Cpp.default.cppStandard": "c++17",
+    "C_Cpp.default.includePath": [
+      "${workspaceFolder:Headers}",
+      "${workspaceFolder:Project Root}/libs"
+    ],
+    "C_Cpp.clang_format_style": "file",
+    "C_Cpp.clang_format_fallbackStyle": "Google",
+    "files.associations": {
+      "*.hpp": "cpp",
+      "*.h": "cpp",
+      "*.tpp": "cpp",
+      "*.json": "jsonc"
+    },
+    "editor.formatOnSave": true,
+    "editor.defaultFormatter": "ms-vscode.cpptools",
+    "[cpp]": {
+      "editor.defaultFormatter": "ms-vscode.cpptools"
+    },
+    "[python]": {
+      "editor.defaultFormatter": "ms-python.python",
+      "editor.formatOnSave": true
+    },
+    "[json]": {
+      "editor.defaultFormatter": "vscode.json-language-features"
+    },
+    "files.exclude": {
+      "**/build": true,
+      "**/.cmake": true,
+      "**/CMakeFiles": true,
+      "**/*.o": true,
+      "**/*.obj": true,
+      "**/*.exe": true,
+      "**/__pycache__": true,
+      "**/*.pyc": true,
+      "**/cmake-build-*": true,
+      "**/.DS_Store": true
+    },
+    "files.watcherExclude": {
+      "**/build/**": true,
+      "**/node_modules/**": true,
+      "**/cmake-build-*/**": true
+    },
+    "search.exclude": {
+      "**/build": true,
+      "**/node_modules": true,
+      "**/libs": true
+    },
+    "doxdocgen.generic.authorEmail": "your.email@example.com",
+    "doxdocgen.generic.authorName": "Your Name",
+    "doxdocgen.file.fileOrder": [
+      "file",
+      "brief",
+      "author",
+      "date"
+    ],
+    "doxdocgen.generic.useGitUserName": true,
+    "doxdocgen.generic.useGitUserEmail": true
+  },
+  "tasks": {
+    "version": "2.0.0",
+    "tasks": [
+      {
+        "label": "CMake: Configure (Debug)",
+        "type": "shell",
+        "command": "cmake",
+        "args": ["-B", "build", "-S", ".", "-DCMAKE_BUILD_TYPE=Debug"],
+        "options": {
+          "cwd": "${workspaceFolder:Project Root}"
+        },
+        "group": "build",
+        "problemMatcher": []
+      },
+      {
+        "label": "CMake: Configure (Release)",
+        "type": "shell",
+        "command": "cmake",
+        "args": ["-B", "build", "-S", ".", "-DCMAKE_BUILD_TYPE=Release"],
+        "options": {
+          "cwd": "${workspaceFolder:Project Root}"
+        },
+        "group": "build",
+        "problemMatcher": []
+      },
+      {
+        "label": "CMake: Reconfigure (Fresh)",
+        "type": "shell",
+        "command": "cmake",
+        "args": ["-B", "build", "-S", ".", "--fresh"],
+        "options": {
+          "cwd": "${workspaceFolder:Project Root}"
+        },
+        "group": "build",
+        "problemMatcher": [],
+        "detail": "Delete CMake cache and reconfigure - use after adding new files"
+      },
+      {
+        "label": "CMake: Build",
+        "type": "shell",
+        "command": "cmake",
+        "args": ["--build", "build"],
+        "options": {
+          "cwd": "${workspaceFolder:Project Root}"
+        },
+        "group": {
+          "kind": "build",
+          "isDefault": true
+        },
+        "problemMatcher": "$gcc"
+      },
+      {
+        "label": "CMake: Build (Release)",
+        "type": "shell",
+        "command": "cmake",
+        "args": ["--build", "build", "--config", "Release"],
+        "options": {
+          "cwd": "${workspaceFolder:Project Root}"
+        },
+        "group": "build",
+        "problemMatcher": "$gcc"
+      },
+      {
+        "label": "CMake: Clean",
+        "type": "shell",
+        "command": "cmake",
+        "args": ["--build", "build", "--target", "clean"],
+        "options": {
+          "cwd": "${workspaceFolder:Project Root}"
+        },
+        "group": "build",
+        "problemMatcher": []
+      },
+      {
+        "label": "Run Program",
+        "type": "shell",
+        "command": "${workspaceFolder:Project Root}/build/main",
+        "args": ["${workspaceFolder:Project Root}/data/input_default.json"],
+        "options": {
+          "cwd": "${workspaceFolder:Project Root}"
+        },
+        "group": "test",
+        "dependsOn": "CMake: Build",
+        "problemMatcher": [],
+        "windows": {
+          "command": "${workspaceFolder:Project Root}\\build\\main.exe"
+        }
+      },
+      {
+        "label": "Run Tests",
+        "type": "shell",
+        "command": "${workspaceFolder:Project Root}/build/tests",
+        "options": {
+          "cwd": "${workspaceFolder:Project Root}"
+        },
+        "group": {
+          "kind": "test",
+          "isDefault": true
+        },
+        "dependsOn": "CMake: Build",
+        "problemMatcher": [],
+        "windows": {
+          "command": "${workspaceFolder:Project Root}\\build\\tests.exe"
+        }
+      },
+      {
+        "label": "Run Valgrind Memory Check",
+        "type": "shell",
+        "command": "valgrind",
+        "args": [
+          "--leak-check=full",
+          "--show-leak-kinds=all",
+          "--track-origins=yes",
+          "${workspaceFolder:Project Root}/build/main",
+          "${workspaceFolder:Project Root}/data/input_default.json"
+        ],
+        "options": {
+          "cwd": "${workspaceFolder:Project Root}"
+        },
+        "group": "test",
+        "dependsOn": "CMake: Build",
+        "problemMatcher": [],
+        "detail": "Check for memory leaks with Valgrind"
+      },
+      {
+        "label": "Format Code (clang-format)",
+        "type": "shell",
+        "command": "cmake",
+        "args": ["--build", "build", "--target", "format"],
+        "options": {
+          "cwd": "${workspaceFolder:Project Root}"
+        },
+        "problemMatcher": []
+      },
+      {
+        "label": "Generate Documentation (Doxygen)",
+        "type": "shell",
+        "command": "cmake",
+        "args": ["--build", "build", "--target", "docs"],
+        "options": {
+          "cwd": "${workspaceFolder:Project Root}"
+        },
+        "problemMatcher": []
+      },
+      {
+        "label": "Make: Build",
+        "type": "shell",
+        "command": "make",
+        "options": {
+          "cwd": "${workspaceFolder:Project Root}"
+        },
+        "group": "build",
+        "problemMatcher": "$gcc"
+      },
+      {
+        "label": "Make: Run",
+        "type": "shell",
+        "command": "make",
+        "args": ["run"],
+        "options": {
+          "cwd": "${workspaceFolder:Project Root}"
+        },
+        "group": "test",
+        "problemMatcher": []
+      },
+      {
+        "label": "Make: Test",
+        "type": "shell",
+        "command": "make",
+        "args": ["test"],
+        "options": {
+          "cwd": "${workspaceFolder:Project Root}"
+        },
+        "group": "test",
+        "problemMatcher": []
+      },
+      {
+        "label": "Make: Memory Check",
+        "type": "shell",
+        "command": "make",
+        "args": ["memcheck"],
+        "options": {
+          "cwd": "${workspaceFolder:Project Root}"
+        },
+        "group": "test",
+        "problemMatcher": []
+      },
+      {
+        "label": "Install Dependencies",
+        "type": "shell",
+        "command": "make",
+        "args": ["deps"],
+        "options": {
+          "cwd": "${workspaceFolder:Project Root}"
+        },
+        "problemMatcher": []
+      },
+      {
+        "label": "Create Submission Archive",
+        "type": "shell",
+        "command": "make",
+        "args": ["submit"],
+        "options": {
+          "cwd": "${workspaceFolder:Project Root}",
+          "env": {
+            "GROUP_ID": "GroupXX",
+            "PROB_NUM": "XX"
+          }
+        },
+        "problemMatcher": [],
+        "detail": "Create compressed zip archive for submission"
+      }
+    ]
+  },
+  "launch": {
+    "version": "0.2.0",
+    "configurations": [
+      {
+        "name": "Debug Program (GDB)",
+        "type": "cppdbg",
+        "request": "launch",
+        "program": "${workspaceFolder:Project Root}/build/main",
+        "args": ["${workspaceFolder:Project Root}/data/input_default.json"],
+        "stopAtEntry": false,
+        "cwd": "${workspaceFolder:Project Root}",
+        "environment": [],
+        "externalConsole": false,
+        "MIMode": "gdb",
+        "setupCommands": [
+          {
+            "description": "Enable pretty-printing for gdb",
+            "text": "-enable-pretty-printing",
+            "ignoreFailures": true
+          }
+        ],
+        "preLaunchTask": "CMake: Build",
+        "windows": {
+          "program": "${workspaceFolder:Project Root}/build/main.exe",
+          "miDebuggerPath": "gdb.exe",
+          "externalConsole": true
+        },
+        "linux": {
+          "program": "${workspaceFolder:Project Root}/build/main",
+          "miDebuggerPath": "/usr/bin/gdb"
+        },
+        "osx": {
+          "program": "${workspaceFolder:Project Root}/build/main",
+          "MIMode": "lldb"
+        }
+      },
+      {
+        "name": "Debug Program (LLDB)",
+        "type": "lldb",
+        "request": "launch",
+        "program": "${workspaceFolder:Project Root}/build/main",
+        "args": ["${workspaceFolder:Project Root}/data/input_default.json"],
+        "cwd": "${workspaceFolder:Project Root}",
+        "preLaunchTask": "CMake: Build",
+        "windows": {
+          "program": "${workspaceFolder:Project Root}/build/main.exe"
+        }
+      },
+      {
+        "name": "Debug Tests (GDB)",
+        "type": "cppdbg",
+        "request": "launch",
+        "program": "${workspaceFolder:Project Root}/build/tests",
+        "args": [],
+        "stopAtEntry": false,
+        "cwd": "${workspaceFolder:Project Root}",
+        "environment": [],
+        "externalConsole": false,
+        "MIMode": "gdb",
+        "setupCommands": [
+          {
+            "description": "Enable pretty-printing for gdb",
+            "text": "-enable-pretty-printing",
+            "ignoreFailures": true
+          }
+        ],
+        "preLaunchTask": "CMake: Build",
+        "windows": {
+          "program": "${workspaceFolder:Project Root}/build/tests.exe",
+          "miDebuggerPath": "gdb.exe"
+        },
+        "linux": {
+          "miDebuggerPath": "/usr/bin/gdb"
+        }
+      }
+    ]
+  },
+  "extensions": {
+    "recommendations": [
+      "ms-vscode.cpptools",
+      "ms-vscode.cmake-tools",
+      "ms-vscode.cpptools-extension-pack",
+      "twxs.cmake",
+      "jeff-hykin.better-cpp-syntax",
+      "cschlosser.doxdocgen",
+      "ms-python.python",
+      "streetsidesoftware.code-spell-checker",
+      "usernamehw.errorlens",
+      "vadimcn.vscode-lldb",
+      "xaver.clang-format",
+      "gruntfuggly.todo-tree",
+      "eamodio.gitlens"
+    ]
+  }
+}

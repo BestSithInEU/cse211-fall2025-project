@@ -1,0 +1,241 @@
+# ============================================================================
+# CSE 211 - Data Structures Term Project
+# CMake Build Configuration
+# ============================================================================
+# Group ID:     [Your Group ID]
+# Problem:      [Problem Number and Title]
+# ============================================================================
+
+cmake_minimum_required(VERSION 3.16)
+project(CSE211_Project
+    VERSION 1.0
+    LANGUAGES CXX
+    DESCRIPTION "CSE 211 Data Structures Term Project"
+)
+
+# ============================================================================
+# C++ Standard
+# ============================================================================
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_EXTENSIONS OFF)
+
+# Generate compile_commands.json for clang-tidy and IDEs
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+
+# ============================================================================
+# Compiler Flags
+# ============================================================================
+if(CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
+    add_compile_options(-Wall -Wextra -Wpedantic)
+    if(CMAKE_BUILD_TYPE STREQUAL "Debug")
+        add_compile_options(-g -O0)
+    else()
+        add_compile_options(-O2)
+    endif()
+endif()
+
+# ============================================================================
+# Directories
+# ============================================================================
+set(SRC_DIR ${CMAKE_SOURCE_DIR}/src)
+set(INC_DIR ${CMAKE_SOURCE_DIR}/include)
+set(TEST_DIR ${CMAKE_SOURCE_DIR}/tests)
+set(DATA_DIR ${CMAKE_SOURCE_DIR}/data)
+set(LIBS_DIR ${CMAKE_SOURCE_DIR}/libs)
+set(SCRIPTS_DIR ${CMAKE_SOURCE_DIR}/scripts)
+
+# ============================================================================
+# Dependencies (using FetchContent)
+# ============================================================================
+include(FetchContent)
+
+# nlohmann/json - Header-only JSON library
+FetchContent_Declare(
+    json
+    GIT_REPOSITORY https://github.com/nlohmann/json.git
+    GIT_TAG v3.11.3
+)
+FetchContent_MakeAvailable(json)
+
+# Add more dependencies as needed:
+# FetchContent_Declare(yaml-cpp ...)
+# FetchContent_Declare(fmt ...)
+
+# ============================================================================
+# Source Files
+# ============================================================================
+file(GLOB_RECURSE SOURCES
+    ${SRC_DIR}/*.cpp
+)
+
+# Separate main.cpp for test builds
+list(FILTER SOURCES EXCLUDE REGEX ".*main\\.cpp$")
+set(MAIN_SOURCE ${SRC_DIR}/main.cpp)
+
+# ============================================================================
+# Main Executable
+# ============================================================================
+add_executable(main ${MAIN_SOURCE} ${SOURCES})
+
+target_include_directories(main PRIVATE
+    ${INC_DIR}
+    ${LIBS_DIR}
+)
+
+target_link_libraries(main PRIVATE
+    nlohmann_json::nlohmann_json
+)
+
+# ============================================================================
+# Tests (including subdirectories: unit/, integration/, edge_cases/, performance/)
+# ============================================================================
+enable_testing()
+
+file(GLOB_RECURSE TEST_SOURCES
+    ${TEST_DIR}/*.cpp
+    ${TEST_DIR}/unit/*.cpp
+    ${TEST_DIR}/integration/*.cpp
+    ${TEST_DIR}/edge_cases/*.cpp
+    ${TEST_DIR}/performance/*.cpp
+)
+
+if(TEST_SOURCES)
+    add_executable(tests ${TEST_SOURCES} ${SOURCES})
+
+    target_include_directories(tests PRIVATE
+        ${INC_DIR}
+        ${LIBS_DIR}
+    )
+
+    target_link_libraries(tests PRIVATE
+        nlohmann_json::nlohmann_json
+    )
+
+    add_test(NAME unit_tests COMMAND tests)
+endif()
+
+# ============================================================================
+# Custom Targets
+# ============================================================================
+
+# Run the main program
+add_custom_target(run
+    COMMAND main ${DATA_DIR}/input_default.json
+    DEPENDS main
+    WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
+    COMMENT "Running main program..."
+)
+
+# Format code with clang-format
+find_program(CLANG_FORMAT clang-format)
+if(CLANG_FORMAT)
+    file(GLOB_RECURSE ALL_SOURCE_FILES
+        ${SRC_DIR}/*.cpp
+        ${INC_DIR}/*.h
+        ${INC_DIR}/*.hpp
+    )
+    add_custom_target(format
+        COMMAND ${CLANG_FORMAT} -i ${ALL_SOURCE_FILES}
+        COMMENT "Formatting code with clang-format..."
+    )
+endif()
+
+# Generate documentation with Doxygen
+find_package(Doxygen)
+if(DOXYGEN_FOUND)
+    add_custom_target(docs
+        COMMAND ${DOXYGEN_EXECUTABLE} ${CMAKE_SOURCE_DIR}/docs/Doxyfile
+        WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
+        COMMENT "Generating documentation with Doxygen..."
+    )
+endif()
+
+# Memory check with Valgrind
+find_program(VALGRIND valgrind)
+if(VALGRIND)
+    add_custom_target(memcheck
+        COMMAND ${VALGRIND}
+            --leak-check=full
+            --show-leak-kinds=all
+            --track-origins=yes
+            $<TARGET_FILE:main> ${DATA_DIR}/input_default.json
+        DEPENDS main
+        COMMENT "Running Valgrind memory check..."
+    )
+endif()
+
+# ============================================================================
+# Create Submission Archive (SOURCE CODE ONLY - NO BUILDS)
+# ============================================================================
+set(GROUP_ID "GroupXX" CACHE STRING "Your group ID for submission")
+set(PROB_NUM "XX" CACHE STRING "Problem number")
+
+add_custom_target(submit
+    COMMAND ${CMAKE_COMMAND} -E echo "Creating compressed submission archive (source code only)..."
+    COMMAND ${CMAKE_COMMAND} -E remove -f ${GROUP_ID}_${PROB_NUM}.zip
+    COMMAND ${CMAKE_COMMAND} -E tar cf ${CMAKE_SOURCE_DIR}/${GROUP_ID}_${PROB_NUM}.zip --format=zip
+        ${SRC_DIR}
+        ${INC_DIR}
+        ${TEST_DIR}
+        ${DATA_DIR}
+        ${SCRIPTS_DIR}
+        ${CMAKE_SOURCE_DIR}/docs
+        ${CMAKE_SOURCE_DIR}/frontend
+        ${CMAKE_SOURCE_DIR}/Makefile
+        ${CMAKE_SOURCE_DIR}/CMakeLists.txt
+        ${CMAKE_SOURCE_DIR}/.clang-format
+        ${CMAKE_SOURCE_DIR}/README.md
+    COMMAND ${CMAKE_COMMAND} -E echo "Created: ${GROUP_ID}_${PROB_NUM}.zip"
+    COMMAND ${CMAKE_COMMAND} -E echo "NOTE: Verify no build artifacts are included!"
+    WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
+    COMMENT "Creating submission archive..."
+)
+
+# Alternative: Use external zip with compression
+find_program(ZIP_PROGRAM zip)
+if(ZIP_PROGRAM)
+    add_custom_target(submit_compressed
+        COMMAND ${CMAKE_COMMAND} -E echo "Creating compressed submission..."
+        COMMAND ${ZIP_PROGRAM} -9 -r ${GROUP_ID}_${PROB_NUM}.zip
+            src include tests data scripts docs frontend
+            Makefile CMakeLists.txt .clang-format README.md
+            -x "*.o" -x "*.obj" -x "*.exe" -x "*.out"
+            -x "*.a" -x "*.so" -x "*.dll" -x "*.dylib"
+            -x "build/*" -x "cmake-build-*/*" -x ".git/*"
+            -x ".vscode/*" -x ".idea/*" -x "*.log"
+            -x "__pycache__/*" -x "node_modules/*"
+        COMMAND ${CMAKE_COMMAND} -E echo "Created: ${GROUP_ID}_${PROB_NUM}.zip"
+        WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
+        COMMENT "Creating compressed submission with zip -9..."
+    )
+endif()
+
+# ============================================================================
+# Installation (optional)
+# ============================================================================
+install(TARGETS main DESTINATION bin)
+
+# ============================================================================
+# Print Configuration Summary
+# ============================================================================
+message(STATUS "")
+message(STATUS "CSE 211 Project Configuration:")
+message(STATUS "  Build type:     ${CMAKE_BUILD_TYPE}")
+message(STATUS "  C++ Standard:   ${CMAKE_CXX_STANDARD}")
+message(STATUS "  Compiler:       ${CMAKE_CXX_COMPILER_ID} ${CMAKE_CXX_COMPILER_VERSION}")
+message(STATUS "")
+message(STATUS "Build commands:")
+message(STATUS "  cmake -B build -DCMAKE_BUILD_TYPE=Debug")
+message(STATUS "  cmake --build build")
+message(STATUS "  cmake --build build --target run")
+message(STATUS "  cmake --build build --target tests")
+message(STATUS "  cmake --build build --target memcheck")
+message(STATUS "  cmake --build build --target format")
+message(STATUS "  cmake --build build --target docs")
+message(STATUS "  ctest --test-dir build")
+message(STATUS "")
+message(STATUS "Submission:")
+message(STATUS "  cmake -DGROUP_ID=Group05 -DPROB_NUM=01 -B build")
+message(STATUS "  cmake --build build --target submit_compressed")
+message(STATUS "")
