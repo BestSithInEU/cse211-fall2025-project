@@ -9,7 +9,7 @@
 
 <img src="https://img.shields.io/badge/Yeditepe-University-1a5276?style=for-the-badge" alt="Yeditepe University"/>
 <img src="https://img.shields.io/badge/Department-Computer_Science_&_Engineering-2980b9?style=for-the-badge" alt="CSE"/>
-<img src="https://img.shields.io/badge/Semester-2025--2026_Fall-27ae60?style=for-the-badge" alt="Fall 2025-2026"/>
+<img src="https://img.shields.io/badge/Semester-2025--2026_Spring-27ae60?style=for-the-badge" alt="Spring 2025-2026"/>
 
 <br><br>
 
@@ -21,7 +21,9 @@
 
 ### Navigation
 
+[**Changes**](#-changes-from-fall-2025) ·
 [**Download**](#-download-your-project) ·
+[**Quick Start**](#-quick-start) ·
 [**Requirements**](#-hard-requirements) ·
 [**Structure**](#-project-structure) ·
 [**Technical**](#-technical-requirements) ·
@@ -39,6 +41,22 @@
 
 <br>
 
+## ★ Changes from Fall 2025
+
+> [!IMPORTANT]
+> **If you took CSE 211 in Fall 2025 or are referencing last semester's materials, note these changes:**
+
+| Change                          | Details                                                                |
+| :------------------------------ | :--------------------------------------------------------------------- |
+| **TUI no longer allowed**       | Terminal UI (ncurses, FTXUI, etc.) frontends are **not accepted** — you must use a GUI (Qt, ImGui, wxWidgets, etc.) or a web-based interface |
+| **Fresh build test emphasized** | Submissions that fail `make && make test` on a clean machine will receive a **grade of 0** |
+
+<br>
+
+---
+
+<br>
+
 ## Table of Contents
 
 <details open>
@@ -48,8 +66,9 @@
 
 |    § | Section                                                | Description                       |
 | ---: | :----------------------------------------------------- | :-------------------------------- |
+|    0 | [Changes from Fall 2025](#-changes-from-fall-2025)     | What's different this semester    |
 |    1 | [Download Your Project](#-download-your-project)       | Get your assignment files         |
-|    2 | [Quick Start](#-quick-start)                           | Get started in 4 steps            |
+|    2 | [Quick Start](#-quick-start)                           | Get up and running                |
 |    3 | [Hard Requirements](#-hard-requirements)               | Non-negotiable requirements       |
 |    4 | [Project Structure](#-project-structure)               | Directory organization            |
 |    5 | [Technical Requirements](#-technical-requirements)     | Language, compiler, build targets |
@@ -79,12 +98,15 @@
 
 <br>
 
-We have split the project into **two document types**:
+The project specification is split into **two documents** — read them in order:
 
-| Document          | Description                                                                                                   |    Priority    |
-| :---------------- | :------------------------------------------------------------------------------------------------------------ | :------------: |
+| Document          | Description                                                                                                  |    Priority    |
+| :---------------- | :----------------------------------------------------------------------------------------------------------- | :------------: |
 | **`base.pdf`**    | General specification with shared requirements, data formats, and technical constraints. Applies to everyone. | **Read First** |
 | **`PROJ-XX.pdf`** | Your specific assignment describing the unique problem your group must solve.                                 |  Read Second   |
+
+> [!TIP]
+> Download **both** documents before you start. The base document defines constraints that apply to every project — skipping it is the most common cause of lost points.
 
 <br>
 
@@ -98,11 +120,23 @@ We have split the project into **two document types**:
 
 ## ► Quick Start
 
-```
-1. Download base.pdf and read it thoroughly (SERIOUSLY!)
-2. Download your assigned PROJ-XX.pdf
-3. Set up your project using the structure below
-4. Implement, test, document, present!
+```bash
+# 1. Read the spec (seriously — most point losses come from skipping this)
+#    Download base.pdf + your PROJ-XX.pdf from the Releases page
+
+# 2. Set up your project
+mkdir -p include/{data_structures,core,utils} src/{data_structures,core,utils} \
+         tests/{unit,integration,edge_cases} data docs/uml frontend
+
+# 3. Copy a starter build file from the _template/ directory
+cp _template/Makefile.template Makefile        # or CMakeLists.txt.template
+cp _template/Doxyfile.template Doxyfile
+cp _template/project.code-workspace.template project.code-workspace
+
+# 4. Implement, test, document, present!
+make          # build
+make test     # run tests
+make run      # run the application
 ```
 
 <br>
@@ -125,7 +159,7 @@ We have split the project into **two document types**:
 |   ☐   | **Custom Data Structures** | Implement your own — `std::vector`, `std::map`, `std::list` etc. are **NOT allowed** |
 |   ☐   | **Build System**           | Makefile or CMake with `make`, `make test`, `make clean` targets                     |
 |   ☐   | **Data Directory**         | Read input from `data/` folder with multiple test files                              |
-|   ☐   | **Visual Frontend**        | GUI or TUI that visualizes your solution                                             |
+|   ☐   | **Visual Frontend**        | GUI or web-based interface that visualizes your solution (TUI is **not** allowed)     |
 |   ☐   | **Testing**                | Unit tests + edge cases + integration tests                                          |
 |   ☐   | **UML Diagrams**           | Class diagram + one behavioral diagram (sequence, activity, etc.)                    |
 |   ☐   | **Modular Code**           | Separate headers/source files — no 1000-line monster files                           |
@@ -163,7 +197,7 @@ project/
 │   ├── utils/              ← Utilities
 │   └── main.cpp            ← Entry point
 │
-└── frontend/               ← GUI/TUI code
+└── frontend/               ← GUI / web UI code
 ```
 
 </td>
@@ -199,6 +233,7 @@ project/
 | :-------------- | :--------------------------------- |
 | `Makefile`      | Build system (or `CMakeLists.txt`) |
 | `.clang-format` | Code formatting configuration      |
+| `.gitignore`    | Files excluded from version control |
 | `README.md`     | Project documentation              |
 | `Doxyfile`      | Documentation generator config     |
 
@@ -235,6 +270,9 @@ project/
 | `make test`  | Run all tests          |
 | `make clean` | Remove build artifacts |
 | `make deps`  | Install dependencies   |
+
+> [!CAUTION]
+> **If `make && make test` fails on a clean machine, your project receives a grade of 0.** Always test with a fresh clone before submitting.
 
 <br>
 
@@ -396,14 +434,16 @@ All heap blocks were freed -- no leaks are possible
 > [!WARNING]
 > **These mistakes will cost you significant points!**
 
-| ✗ Mistake                                     | ✓ Solution                                    |
-| :-------------------------------------------- | :-------------------------------------------- |
-| Using `std::vector` or other STL containers   | Implement your own data structures            |
-| No Makefile (we can't build = we can't grade) | Include `Makefile` or `CMakeLists.txt`        |
-| Hardcoded paths or no `data/` directory       | Use relative paths, read from `data/`         |
-| No tests or only testing "happy path"         | Write unit, integration, and edge case tests  |
-| All code in one giant file                    | Modularize: separate headers and source files |
-| Frontend that doesn't visualize the solution  | Actually show the algorithm/data in action    |
+| ✗ Mistake                                     | ✓ Solution                                       |
+| :-------------------------------------------- | :----------------------------------------------- |
+| Using `std::vector` or other STL containers   | Implement your own data structures               |
+| No Makefile (can't build = grade of 0)        | Include `Makefile` or `CMakeLists.txt`           |
+| Hardcoded paths or no `data/` directory       | Use relative paths, read from `data/`            |
+| No tests or only testing "happy path"         | Write unit, integration, and edge case tests     |
+| All code in one giant file                    | Modularize: separate headers and source files    |
+| Frontend that doesn't visualize the solution  | Actually show the algorithm/data in action       |
+| Memory leaks / no cleanup in destructors      | Use RAII, test with Valgrind before submitting   |
+| Submitting without a fresh build test         | Extract zip to `/tmp`, run `make && make test`   |
 
 <br>
 
@@ -451,6 +491,9 @@ make test
 make run
 ```
 
+> [!CAUTION]
+> If this fails on a clean machine, it **will** fail during grading — and your project receives a **grade of 0**. This test takes 30 seconds.
+
 <br>
 
 <div align="right">
@@ -469,6 +512,7 @@ make run
 | :---: | :---------- | :------------------------------------------------------------------------------- |
 |   ☐   | **Build**   | Code compiles without errors                                                     |
 |   ☐   | **Build**   | No compiler warnings                                                             |
+|   ☐   | **Build**   | Fresh build test passes (unzip → make → make test → make run)                    |
 |   ☐   | **Testing** | All tests pass                                                                   |
 |   ☐   | **Testing** | No memory leaks ([Valgrind](https://valgrind.org/) clean)                        |
 |   ☐   | **Code**    | Code is formatted ([clang-format](https://clang.llvm.org/docs/ClangFormat.html)) |
@@ -478,8 +522,8 @@ make run
 |   ☐   | **Docs**    | Documentation generates ([Doxygen](https://www.doxygen.nl/))                     |
 |   ☐   | **Docs**    | README is complete                                                               |
 |   ☐   | **Docs**    | UML diagrams included                                                            |
-|   ☐   | **Docs**    | Presentation slides included                                                     |
-|   ☐   | **App**     | Frontend works                                                                   |
+|   ☐   | **Docs**    | Presentation slides ready                                                        |
+|   ☐   | **App**     | Frontend works and visualizes the solution                                       |
 |   ☐   | **App**     | Data files included in `data/`                                                   |
 
 </div>
@@ -523,19 +567,6 @@ make run
 | **FLTK**       | Lightweight, fast            | [fltk.org](https://www.fltk.org/)                            |
 | **GTKmm**      | C++ bindings for GTK         | [gtkmm.org](https://www.gtkmm.org/)                          |
 | **Nana**       | Modern C++ GUI library       | [github.com/cnjinhao/nana](https://github.com/cnjinhao/nana) |
-
-</details>
-
-<details>
-<summary><strong>► Terminal UI (TUI) Libraries</strong></summary>
-
-<br>
-
-| Library      | Description              | Link                                                                       |
-| :----------- | :----------------------- | :------------------------------------------------------------------------- |
-| **ncurses**  | Classic terminal UI      | [invisible-island.net/ncurses](https://invisible-island.net/ncurses/)      |
-| **FTXUI**    | Modern C++ TUI           | [github.com/ArthurSonzogni/FTXUI](https://github.com/ArthurSonzogni/FTXUI) |
-| **termbox2** | Minimal terminal library | [github.com/termbox/termbox2](https://github.com/termbox/termbox2)         |
 
 </details>
 
@@ -619,6 +650,6 @@ make run
 
 ---
 
-<sub>CSE 211 — Data Structures · Term Project · 2025-2026 Fall Semester</sub>
+<sub>CSE 211 — Data Structures · Term Project · 2025-2026 Spring Semester</sub>
 
 </div>
