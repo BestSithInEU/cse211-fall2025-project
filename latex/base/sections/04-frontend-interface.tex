@@ -1,0 +1,137 @@
+% sections/04-frontend-interface.tex — Frontend Interface
+
+\section{Frontend Interface}
+
+% ── Requirement ──
+\subsection{Requirement}
+
+Your project must implement at least \textbf{one} user interface. The interface should allow users to interact with your application and visualize the results.
+
+\begin{notebox}[Bonus Points]
+Implementing \textbf{two or more} interface types earns \textbf{+2 bonus points}.
+\end{notebox}
+
+% ── Interface Options ──
+\subsection{Interface Options}
+
+\subsubsection{\cpp{} GUI}
+
+\begin{multicols}{2}
+\begin{itemize}
+  \item \textbf{Qt} --- Full-featured, cross-platform GUI framework with rich widget library and designer tools.
+  \item \textbf{ImGui} --- Immediate-mode GUI, ideal for debug/visualization tools with minimal setup.
+  \item \textbf{wxWidgets} --- Native look-and-feel, cross-platform widget toolkit.
+  \item \textbf{FLTK} --- Lightweight, fast, small footprint GUI library.
+\end{itemize}
+\end{multicols}
+
+\subsubsection{Python Frontend}
+
+Use Python for the interface while keeping the core logic in \cpp{}. This approach requires a binding layer between the two languages (see Section~\ref{sec:integration-tools}).
+
+\subsubsection{Web Interface}
+
+Build a \cpp{} backend serving a REST API with an HTML/CSS/JavaScript frontend. Recommended frameworks:
+
+\begin{itemize}
+  \item \textbf{Crow} --- Micro web framework for \cpp{}, Flask-inspired.
+  \item \textbf{Drogon} --- High-performance async web framework.
+  \item \textbf{cpp-httplib} --- Single-header HTTP/HTTPS library.
+\end{itemize}
+
+\subsubsection{Desktop Application}
+
+\begin{itemize}
+  \item \textbf{Electron} --- Web technologies (HTML/CSS/JS) with \cpp{} native addon via N-API.
+  \item \textbf{Tauri} --- Rust-based, lighter alternative to Electron with lower resource usage.
+\end{itemize}
+
+% ── C++/Python Integration Tools ──
+\subsection{\cpp{}/Python Integration Tools}
+\label{sec:integration-tools}
+
+\subsubsection{ctypes}
+
+Python's built-in foreign function library for calling C-compatible shared libraries.
+
+\begin{lstlisting}[style=python]
+import ctypes
+
+# Load the shared library
+lib = ctypes.CDLL("./libproject.so")
+
+# Define argument and return types
+lib.search.argtypes = [ctypes.c_char_p]
+lib.search.restype = ctypes.c_int
+
+# Call the function
+result = lib.search(b"query")
+print(f"Result: {result}")
+\end{lstlisting}
+
+Best for: Simple C-style interfaces, quick prototyping.
+
+\subsubsection{cffi}
+
+C Foreign Function Interface for Python, providing a cleaner API than ctypes.
+
+\begin{lstlisting}[style=python]
+from cffi import FFI
+
+ffi = FFI()
+ffi.cdef("""
+    int search(const char* query);
+    void insert(const char* key, int value);
+""")
+
+lib = ffi.dlopen("./libproject.so")
+result = lib.search(b"query")
+\end{lstlisting}
+
+Best for: C libraries, cleaner API than ctypes.
+
+\subsubsection{pybind11}
+
+Seamless \cpp{}/Python interoperability with modern \cpp{} features.
+
+\begin{lstlisting}[style=cpp]
+#include <pybind11/pybind11.h>
+namespace py = pybind11;
+
+class HashTable {
+public:
+    void insert(const std::string& key, int value);
+    int search(const std::string& key);
+};
+
+PYBIND11_MODULE(project, m) {
+    py::class_<HashTable>(m, "HashTable")
+        .def(py::init<>())
+        .def("insert", &HashTable::insert)
+        .def("search", &HashTable::search);
+}
+\end{lstlisting}
+
+Best for: \cpp{} classes, STL containers, modern \cpp{}.
+
+\subsubsection{SWIG}
+
+Simplified Wrapper and Interface Generator. Generates bindings for multiple target languages from annotated \cpp{} headers.
+
+Best for: Multi-language support, large existing codebases.
+
+\subsubsection{Boost.Python}
+
+Part of the Boost libraries, provides a rich interface for \cpp{}/Python interoperability.
+
+Best for: Projects already using Boost libraries.
+
+% ── Recommendations ──
+\subsection{Recommendations}
+
+\begin{enumerate}
+  \item \textbf{Simple projects:} \cpp{} Console or ctypes
+  \item \textbf{Visualization-heavy:} Qt or ImGui
+  \item \textbf{Python integration:} pybind11
+  \item \textbf{Web deployment:} REST API + Web frontend
+\end{enumerate}

@@ -1,0 +1,52 @@
+\section{Problem Statement}
+
+Design and implement a simulation of the Chord distributed hash table (DHT) protocol. The system uses consistent hashing to map both nodes and keys onto a circular identifier space $[0, 2^m - 1]$. Each node maintains a finger table for $O(\log N)$ routing and is responsible for storing keys that hash to its portion of the ring. The simulation must support key storage and retrieval, as well as node join and leave operations with correct key transfer.
+
+\section{Core Concepts}
+
+\begin{itemize}
+  \item \textbf{Identifier Space:} A circular ring of integers $[0, 2^m - 1]$, where $m$ is typically 8 for simulation purposes. Both nodes and keys are hashed to positions on this ring.
+  \item \textbf{Consistent Hashing:} Nodes and keys are mapped to ring positions via a hash function. Each key is stored at its successor --- the first node whose position is at or after the key's hash on the ring.
+  \item \textbf{Successor:} The first active node encountered when moving clockwise from a given position on the ring. A key's successor is the node responsible for storing that key.
+  \item \textbf{Finger Table:} Each node $N$ maintains $m$ entries. Entry $i$ points to the successor of $(N + 2^{i-1}) \bmod 2^m$, enabling logarithmic routing by allowing large jumps across the ring.
+  \item \textbf{Routing:} To look up a key, a node forwards the query to the closest preceding finger that does not overshoot the target, repeating until the query arrives at the key's successor.
+\end{itemize}
+
+\section{Key Challenges}
+
+\begin{itemize}
+  \item \textbf{Modular Arithmetic:} Correctly determining whether an identifier falls ``between'' two points on a circular ring, handling the wraparound at $2^m - 1 \to 0$.
+  \item \textbf{Finger Table Construction:} For each entry $i$ in node $N$'s finger table, finding the successor of $(N + 2^{i-1}) \bmod 2^m$ among all active nodes.
+  \item \textbf{Lookup Routing:} Implementing the ``closest preceding finger'' logic that iterates finger table entries in reverse to find the best next hop without overshooting.
+  \item \textbf{Node Join:} When a new node joins, it must find its successor, transfer the appropriate keys, build its finger table, and notify existing nodes to update theirs.
+  \item \textbf{Node Departure:} When a node leaves, it must transfer all its stored keys to its successor. Graceful departure updates neighbors, while abrupt failure requires stabilization protocols.
+\end{itemize}
+
+\section{Sample Input}
+
+\begin{lstlisting}[style=json, caption={data/input\_sample.json}]
+{
+  "ring_bits": 8,
+  "initial_nodes": [
+    {"id": "N1", "position": 10},
+    {"id": "N2", "position": 80},
+    {"id": "N3", "position": 160},
+    {"id": "N4", "position": 220}
+  ],
+  "operations": [
+    {"type": "put", "key": "user:alice", "value": "alice@example.com"},
+    {"type": "put", "key": "user:bob", "value": "bob@example.com"},
+    {"type": "put", "key": "config:db_host", "value": "10.0.0.5"},
+    {"type": "get", "key": "user:alice"},
+    {"type": "join", "node_id": "N5", "position": 120},
+    {"type": "get", "key": "config:db_host"},
+    {"type": "leave", "node_id": "N2"},
+    {"type": "get", "key": "user:bob"},
+    {"type": "ring_status"}
+  ]
+}
+\end{lstlisting}
+
+\vfill
+\noindent\rule{\textwidth}{0.4pt}
+{\small\textit{For full project requirements, STL restrictions, submission format, and grading criteria, refer to \textbf{base.pdf} (available on the \href{https://github.com/BestSithInEU/cse211-term-projects/releases}{Releases page}).}}

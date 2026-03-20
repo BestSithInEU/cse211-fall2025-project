@@ -1,0 +1,55 @@
+\section{Problem Statement}
+
+Design and implement a system that processes air quality sensor readings over time, detects pollution hotspots, tracks their evolution and movement, and generates alerts. A spatial network of sensors at fixed locations reports PM2.5 and ozone concentrations at regular intervals. The system must identify contiguous regions exceeding unhealthy thresholds, track hotspot identity across time steps, and prioritize alerts based on severity, affected population, duration, and trend.
+
+\section{Core Concepts}
+
+\begin{itemize}
+  \item \textbf{Air Quality Index (AQI):} A composite scale from 0 to 500 that translates raw pollutant concentrations into a standardized health-risk metric.
+  \item \textbf{Hotspot:} A contiguous region of sensors whose readings exceed an unhealthy threshold. Defined by spatial clustering of above-threshold sensors.
+  \item \textbf{Hotspot Lifecycle:} Hotspots are born when a cluster first appears, grow or shrink as readings change, move when the centroid shifts, and die when all sensors drop below threshold.
+  \item \textbf{Sensor Adjacency:} Two sensors within a configured distance are considered neighbors. Adjacency defines the graph used for clustering.
+  \item \textbf{Alert Priority:} Determined by AQI level, nearby population, hotspot duration, and whether the trend is worsening or improving.
+\end{itemize}
+
+\section{Key Challenges}
+
+\begin{itemize}
+  \item \textbf{Streaming Data Processing:} Sensor readings arrive continuously. The system must update hotspot state incrementally rather than recomputing from scratch.
+  \item \textbf{Spatial Clustering:} Define hotspot boundaries from discrete sensor points using adjacency-based connected components or density-based clustering.
+  \item \textbf{Temporal Tracking:} Maintain hotspot identity across time steps even as hotspots merge, split, move, or change shape.
+  \item \textbf{Missing/Faulty Data:} Handle sensors that go offline or report anomalous values. Use neighbor interpolation to fill gaps.
+  \item \textbf{Prediction:} Use wind direction and speed to predict hotspot movement and generate early warnings for downwind areas.
+\end{itemize}
+
+\section{Sample Input}
+
+\begin{lstlisting}[style=json]
+{
+  "sensors": [
+    {"id": "s1", "x": 0.0, "y": 0.0, "population_nearby": 5000},
+    {"id": "s2", "x": 1.0, "y": 0.0, "population_nearby": 3000},
+    {"id": "s3", "x": 0.5, "y": 0.8, "population_nearby": 8000},
+    {"id": "s4", "x": 2.0, "y": 1.0, "population_nearby": 2000}
+  ],
+  "readings": [
+    {"timestamp": 0, "sensor": "s1", "pm25": 45.2, "ozone": 0.06},
+    {"timestamp": 0, "sensor": "s2", "pm25": 82.1, "ozone": 0.09},
+    {"timestamp": 0, "sensor": "s3", "pm25": 78.5, "ozone": 0.08},
+    {"timestamp": 0, "sensor": "s4", "pm25": 30.0, "ozone": 0.04},
+    {"timestamp": 1, "sensor": "s1", "pm25": 55.0, "ozone": 0.07},
+    {"timestamp": 1, "sensor": "s2", "pm25": 90.3, "ozone": 0.10},
+    {"timestamp": 1, "sensor": "s3", "pm25": 85.0, "ozone": 0.09},
+    {"timestamp": 1, "sensor": "s4", "pm25": 42.0, "ozone": 0.05}
+  ],
+  "thresholds": {
+    "pm25_unhealthy": 55.5,
+    "ozone_unhealthy": 0.071
+  },
+  "adjacency_distance": 1.5
+}
+\end{lstlisting}
+
+\vfill
+\noindent\rule{\textwidth}{0.4pt}
+{\small\textit{For full project requirements, STL restrictions, submission format, and grading criteria, refer to \textbf{base.pdf} (available on the \href{https://github.com/BestSithInEU/cse211-term-projects/releases}{Releases page}).}}

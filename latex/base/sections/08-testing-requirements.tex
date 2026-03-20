@@ -1,0 +1,175 @@
+% sections/08-testing-requirements.tex — Testing Requirements
+
+\section{Testing Requirements}
+
+% ── Overview ──
+\subsection{Overview}
+
+Comprehensive testing is mandatory. Your test suite must cover:
+
+\begin{enumerate}
+  \item \textbf{Unit tests} for each custom data structure
+  \item \textbf{Integration tests} for module interactions
+  \item \textbf{Edge case tests} for boundary conditions and error handling
+  \item \textbf{Performance tests} for large inputs and stress scenarios
+\end{enumerate}
+
+% ── Test Organization ──
+\subsection{Test Organization}
+
+\begin{lstlisting}[style=tree]
+tests/
+|-- test_main.cpp .................. Test runner entry point
+|-- unit/
+|   |-- test_data_structures.cpp ... Data structure unit tests
+|   |-- test_algorithms.cpp ........ Algorithm unit tests
+|   +-- test_utils.cpp ............. Utility function tests
+|-- integration/
+|   |-- test_workflow.cpp .......... End-to-end workflow tests
+|   +-- test_file_io.cpp .......... File I/O integration tests
+|-- edge_cases/
+|   |-- test_empty.cpp ............. Empty input tests
+|   |-- test_single.cpp ........... Single element tests
+|   +-- test_boundary.cpp ......... Boundary condition tests
+|-- performance/
+|   |-- test_stress.cpp ........... Stress tests with large inputs
+|   +-- test_benchmark.cpp ........ Performance benchmarks
++-- fixtures/
+    |-- test_helpers.hpp ........... Shared test utilities
+    +-- mock_data.hpp .............. Mock data generators
+\end{lstlisting}
+
+% ── Test Coverage ──
+\subsection{Test Coverage}
+
+Every custom data structure must be tested across the following categories:
+
+\begin{center}
+\begin{tabular}{l l}
+\hline
+\rowcolor{tableheader} \textbf{Category} & \textbf{Test Cases} \\
+\hline
+Construction & Default constructor, parameterized constructor \\
+Insertion & Beginning, middle, end, duplicate handling \\
+Deletion & Beginning, middle, end, non-existent element \\
+Search & Existing element, non-existent element \\
+Edge Cases & Empty structure, single element, full capacity \\
+Boundary & Maximum size, minimum values, overflow \\
+\hline
+\end{tabular}
+\end{center}
+
+% ── Test Format ──
+\subsection{Test Format}
+
+Each test should follow a clear structure with description, input, expected output, and verification:
+
+\begin{lstlisting}[style=cpp]
+void test_insert_at_beginning() {
+    // Description: Insert element at position 0
+    // Input: List [10, 20, 30], insert 5 at index 0
+    // Expected: List [5, 10, 20, 30], size = 4
+
+    LinkedList<int> list;
+    list.insert(0, 10);
+    list.insert(1, 20);
+    list.insert(2, 30);
+
+    // Precondition check
+    assert(list.getSize() == 3);
+
+    // Action
+    list.insert(0, 5);
+
+    // Postcondition verification
+    assert(list.getSize() == 4);
+    assert(list.get(0) == 5);
+    assert(list.get(1) == 10);
+    assert(list.get(2) == 20);
+    assert(list.get(3) == 30);
+
+    std::cout << "  test_insert_at_beginning PASSED\n";
+}
+\end{lstlisting}
+
+% ── Memory Testing ──
+\subsection{Memory Testing}
+
+All pointer-based data structures must be tested for memory leaks:
+
+\begin{lstlisting}[style=bash]
+make memcheck
+# or manually:
+valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes \
+    ./build/bin/tests
+\end{lstlisting}
+
+Expected clean output:
+
+\begin{lstlisting}[style=plaintext]
+==12345== HEAP SUMMARY:
+==12345==     in use at exit: 0 bytes in 0 blocks
+==12345==   total heap usage: 150 allocs, 150 frees, 12,800 bytes allocated
+==12345==
+==12345== All heap blocks were freed -- no leaks are possible
+\end{lstlisting}
+
+% ── Test Frameworks ──
+\subsection{Test Frameworks}
+
+You may use any of the following testing approaches:
+
+\begin{itemize}
+  \item \textbf{Google Test} --- full-featured, industry standard
+  \item \textbf{Catch2} --- header-only, modern \cpp
+  \item \textbf{doctest} --- very fast compilation, minimal overhead
+  \item \textbf{Custom assert-based testing} --- simple \code{assert()} with descriptive output
+\end{itemize}
+
+% ── Test Output ──
+\subsection{Test Output}
+
+Running \maketest{} should produce clear, structured output:
+
+\begin{lstlisting}[style=plaintext]
+[UNIT] Data Structures
+  test_constructor .................. PASSED
+  test_insert ....................... PASSED
+  test_insert_at_beginning ......... PASSED
+  test_insert_at_end ............... PASSED
+  test_remove ...................... PASSED
+  test_search ...................... PASSED
+  test_size ........................ PASSED
+
+[UNIT] Algorithms
+  test_sort ........................ PASSED
+  test_traverse .................... PASSED
+
+[INTEGRATION] Workflow
+  test_load_and_process ............ PASSED
+  test_end_to_end .................. PASSED
+
+[EDGE CASES] Boundary Conditions
+  test_empty_structure ............. PASSED
+  test_single_element .............. PASSED
+  test_max_values .................. PASSED
+
+[PERFORMANCE] Stress Tests
+  test_large_input (10000 ops) ..... PASSED
+  test_memory_usage ................ PASSED
+
+SUMMARY: 16/16 tests passed
+TIME:    0.042s
+MEMORY:  No leaks detected
+\end{lstlisting}
+
+% ── Continuous Testing ──
+\subsection{Continuous Testing}
+
+Run your tests frequently throughout development:
+
+\begin{itemize}
+  \item After implementing each method
+  \item Before committing changes
+  \item After any refactoring
+\end{itemize}

@@ -1,0 +1,204 @@
+% appendices/A-test-data-examples.tex — Extended Test Data Examples
+
+\section*{Appendix A: Extended Test Data Examples}
+\addcontentsline{toc}{section}{Appendix A: Extended Test Data Examples}
+
+This appendix contains detailed, themed test data examples. These are provided for inspiration only---you are free to use any format and theme that suits your project.
+
+% ── Default Input (JSON) ──
+\subsection*{A.1 Default Input (JSON) --- Star Wars Theme}
+\addcontentsline{toc}{subsection}{A.1 Default Input (JSON)}
+
+\begin{lstlisting}[style=json, caption={data/input\_default.json}]
+{
+    "description": "Sith Lords power network",
+    "nodes": [
+        { "id": 1, "name": "Darth Sidious", "power": 9500, "planet": "Coruscant" },
+        { "id": 2, "name": "Darth Vader", "power": 8700, "planet": "Mustafar" },
+        { "id": 3, "name": "Darth Maul", "power": 7200, "planet": "Dathomir" }
+    ],
+    "edges": [
+        { "from": 1, "to": 2, "relation": "master_apprentice", "years": 23 },
+        { "from": 1, "to": 3, "relation": "master_apprentice", "years": 12 }
+    ]
+}
+\end{lstlisting}
+
+% ── Small Dataset (YAML) ──
+\subsection*{A.2 Small Dataset (YAML) --- Batman Theme}
+\addcontentsline{toc}{subsection}{A.2 Small Dataset (YAML)}
+
+\begin{lstlisting}[style=yaml, caption={data/input\_small.yaml}]
+# Gotham City Villain Network
+description: "Arkham Asylum inmates"
+
+villains:
+  - id: 1
+    name: "Joker"
+    threat_level: 10
+
+  - id: 2
+    name: "Harley Quinn"
+    threat_level: 7
+
+alliances:
+  - from: 1
+    to: 2
+    type: "partner"
+\end{lstlisting}
+
+% ── Large Dataset (CSV) ──
+\subsection*{A.3 Large Dataset (CSV) --- Heavy Metal Theme}
+\addcontentsline{toc}{subsection}{A.3 Large Dataset (CSV)}
+
+\begin{lstlisting}[style=plaintext, caption={data/input\_large.csv}]
+# Metal Bands Influence Network
+id,name,genre,year_formed,country,influence_score
+1,Black Sabbath,Heavy Metal,1968,UK,100
+2,Metallica,Thrash Metal,1981,USA,95
+3,Iron Maiden,NWOBHM,1975,UK,92
+4,Slayer,Thrash Metal,1981,USA,88
+\end{lstlisting}
+
+% ── Edge Case: Empty (XML) ──
+\subsection*{A.4 Edge Case: Empty (XML) --- Sci-Fi Theme}
+\addcontentsline{toc}{subsection}{A.4 Edge Case: Empty (XML)}
+
+\begin{lstlisting}[style=xml, caption={data/edge\_case\_empty.xml}]
+<?xml version="1.0" encoding="UTF-8"?>
+<galaxy name="Andromeda-7X">
+    <description>Empty universe simulation</description>
+    <star_systems/>
+    <civilizations/>
+    <expected status="void"/>
+</galaxy>
+\end{lstlisting}
+
+% ── Edge Case: Single (TOML) ──
+\subsection*{A.5 Edge Case: Single (TOML) --- Cyberpunk Theme}
+\addcontentsline{toc}{subsection}{A.5 Edge Case: Single (TOML)}
+
+\begin{lstlisting}[style=toml, caption={data/edge\_case\_single.toml}]
+# Lone netrunner - single node test
+description = "Lone netrunner - single node test"
+
+[[runners]]
+id = 1
+handle = "V"
+street_cred = 50
+cyberware = ["Mantis Blades", "Sandevistan"]
+
+contacts = []  # No connections
+\end{lstlisting}
+
+% ── Edge Case: Maximum Values (TXT) ──
+\subsection*{A.6 Edge Case: Maximum Values (TXT) --- WWII Theme}
+\addcontentsline{toc}{subsection}{A.6 Edge Case: Maximum Values (TXT)}
+
+\begin{lstlisting}[style=plaintext, caption={data/edge\_case\_max.txt}]
+# World War II Battles - Extreme Values Test
+# FORMAT: BATTLE|year|casualties|divisions|morale
+
+BATTLE|Stalingrad|1942|2000000|50|85
+BATTLE|Hypothetical_Max|2147483647|2147483647|2147483647|2147483647
+BATTLE|Zero_Test|1944|0|1|100
+
+EXPECTED|handles_max_int|true
+\end{lstlisting}
+
+% ── Stress Test (JSON) ──
+\subsection*{A.7 Stress Test (JSON) --- Star Trek Theme}
+\addcontentsline{toc}{subsection}{A.7 Stress Test (JSON)}
+
+\begin{lstlisting}[style=json, caption={data/test\_stress.json}]
+{
+    "description": "Federation Stress Test",
+    "test_scenarios": [
+        {
+            "name": "warp_network",
+            "type": "sparse_graph",
+            "nodes": 10000,
+            "edges": 25000
+        },
+        {
+            "name": "borg_collective",
+            "type": "complete_graph",
+            "nodes": 500
+        },
+        {
+            "name": "tribble_growth",
+            "type": "exponential",
+            "generations": 30
+        }
+    ],
+    "time_limits_ms": {
+        "sparse_graph": 5000,
+        "complete_graph": 10000,
+        "exponential": 2000
+    }
+}
+\end{lstlisting}
+
+% ── Invalid Data (JSON) ──
+\subsection*{A.8 Invalid Data (JSON) --- Matrix Theme}
+\addcontentsline{toc}{subsection}{A.8 Invalid Data (JSON)}
+
+\begin{lstlisting}[style=json, caption={data/test\_invalid.json}]
+{
+    "description": "Error handling test",
+    "anomalies": [
+        { "id": -1, "name": "", "value": "not_a_number" },
+        { "id": 1, "name": "Agent Smith" },
+        { "id": 1, "name": "Agent Smith Clone" }
+    ],
+    "expected_behavior": {
+        "should_not_crash": true,
+        "log_errors": true
+    }
+}
+\end{lstlisting}
+
+% ── Expected Output (JSON) ──
+\subsection*{A.9 Expected Output (JSON) --- Dark Souls Theme}
+\addcontentsline{toc}{subsection}{A.9 Expected Output (JSON)}
+
+\begin{lstlisting}[style=json, caption={data/expected\_output.json}]
+{
+    "test_cases": [
+        {
+            "input_file": "input_default.json",
+            "expected": {
+                "path": ["Firelink Shrine", "Undead Burg", "Anor Londo"],
+                "total_cost": 45000,
+                "status": "VICTORY ACHIEVED"
+            }
+        }
+    ],
+    "validation_rules": {
+        "float_tolerance": 0.001
+    }
+}
+\end{lstlisting}
+
+% ── Binary Format (BIN) ──
+\subsection*{A.10 Binary Format (BIN) --- Ghost in the Shell Theme}
+\addcontentsline{toc}{subsection}{A.10 Binary Format (BIN)}
+
+\begin{lstlisting}[style=plaintext, caption={Binary format specification}]
+Header (64 bytes):
+  [0-3]   Magic: 0x47535442
+  [4-7]   Version: uint32
+  [8-15]  Node count: uint64
+  [16-23] Edge count: uint64
+
+Node Record (32 bytes):
+  [0-7]   id: uint64
+  [8-15]  value1: double
+  [16-23] value2: double
+  [24-27] flags: uint32
+
+Edge Record (24 bytes):
+  [0-7]   source: uint64
+  [8-15]  target: uint64
+  [16-23] weight: double
+\end{lstlisting}

@@ -1,0 +1,56 @@
+\section{Problem Statement}
+
+Design and implement an evacuation route planner and simulator that guides building occupants from their current locations to the nearest safe exits while avoiding fire and respecting corridor capacity limits. The building is modeled as a graph where nodes represent rooms, hallways, stairwells, and exits, and edges represent connections with associated capacity and traversal time. Fire spreads over time, dynamically blocking routes and forcing replanning.
+
+\section{Core Concepts}
+
+\begin{itemize}
+  \item \textbf{Corridor Capacity:} Each edge has a maximum flow rate defining how many people can traverse it per time step, creating potential bottlenecks.
+  \item \textbf{Fire Spread Model:} Fire expands from its origin node to adjacent nodes based on flammability ratings and ventilation conditions, blocking edges over time.
+  \item \textbf{Time-Step Simulation:} The evacuation proceeds in discrete time steps, with people moving, fire spreading, and routes updating each step.
+  \item \textbf{Evacuation Bottleneck:} Narrow corridors and stairwells create congestion points where people queue, increasing evacuation time.
+  \item \textbf{Safe vs.\ Dangerous Routes:} Routes must be evaluated not only by length but by proximity to fire and predicted safety over the traversal duration.
+\end{itemize}
+
+\section{Key Challenges}
+
+\begin{itemize}
+  \item \textbf{Dynamic Graph Updates:} As fire spreads, edges and nodes become blocked, requiring the graph to be updated and routes recalculated each time step.
+  \item \textbf{Multi-Source Evacuation:} Occupants start from multiple locations simultaneously and must be routed to potentially different exits.
+  \item \textbf{Flow Simulation:} Simulate queuing at bottlenecks where corridor capacity is exceeded, modeling realistic evacuation delays.
+  \item \textbf{Predictive Routing:} Use fire spread prediction to avoid routes that are currently safe but will be blocked by the time occupants reach them.
+  \item \textbf{Unreachable Detection:} Identify occupants who cannot reach any exit due to fire encirclement, reporting them as casualties.
+\end{itemize}
+
+\section{Sample Input}
+
+\begin{lstlisting}[style=json, caption={data/input\_sample.json}]
+{
+  "building": {
+    "floors": 3,
+    "fire_origin": "R3"
+  },
+  "nodes": [
+    {"id": "R1", "type": "room", "floor": 1, "occupants": 5},
+    {"id": "R2", "type": "room", "floor": 1, "occupants": 3},
+    {"id": "R3", "type": "room", "floor": 2, "occupants": 0},
+    {"id": "H1", "type": "hallway", "floor": 1, "occupants": 0},
+    {"id": "S1", "type": "stairwell", "floor": 1, "occupants": 0},
+    {"id": "S1_F2", "type": "stairwell", "floor": 2, "occupants": 0},
+    {"id": "E1", "type": "exit", "floor": 1, "occupants": 0}
+  ],
+  "edges": [
+    {"from": "R1", "to": "H1", "capacity": 3, "traversal_time": 1},
+    {"from": "R2", "to": "H1", "capacity": 3, "traversal_time": 1},
+    {"from": "H1", "to": "S1", "capacity": 2, "traversal_time": 2},
+    {"from": "H1", "to": "E1", "capacity": 4, "traversal_time": 1},
+    {"from": "S1", "to": "S1_F2", "capacity": 2, "traversal_time": 3},
+    {"from": "S1_F2", "to": "R3", "capacity": 2, "traversal_time": 1}
+  ],
+  "fire_spread_rate": 0.5
+}
+\end{lstlisting}
+
+\vfill
+\noindent\rule{\textwidth}{0.4pt}
+{\small\textit{For full project requirements, STL restrictions, submission format, and grading criteria, refer to \textbf{base.pdf} (available on the \href{https://github.com/BestSithInEU/cse211-term-projects/releases}{Releases page}).}}

@@ -1,0 +1,158 @@
+% sections/03-custom-data-structures.tex — Custom Data Structures
+
+\section{Custom Data Structures}
+
+\begin{constraintbox}[HARD CONSTRAINT --- NO STL CONTAINERS]
+You \textbf{MUST} implement your own data structures. Using \stdvec, \stdmap, \stdlist, etc.\ as primary storage = \textbf{automatic point deduction}.
+
+\vspace{4pt}
+This is a Data Structures course---show us you can build them!
+\end{constraintbox}
+
+% ── Requirement ──
+\subsection{Requirement}
+
+You must implement at least \textbf{two (2)} custom data structures from scratch. These data structures must be \textbf{central} to your solution, not auxiliary.
+
+The two data structures must be from \textbf{different categories} (e.g., one from Linear and one from Tree-Based or Hash-Based). Implementing two variations of the same category (e.g., a linked list and a stack built on a linked list) does not satisfy this requirement.
+
+% ── Restrictions ──
+\subsection{Restrictions}
+
+The following STL containers are \textbf{NOT} allowed as primary storage:
+
+\begin{multicols}{3}
+\begin{itemize}
+  \item \stdvec
+  \item \stdlist
+  \item \code{std::forward\_list}
+  \item \code{std::deque}
+  \item \code{std::array}
+  \item \stdset
+  \item \code{std::multiset}
+  \item \stdmap
+  \item \code{std::multimap}
+  \item \code{std::unordered\_set}
+  \item \code{std::unordered\_map}
+  \item \code{std::stack}
+  \item \code{std::queue}
+  \item \code{std::priority\_queue}
+\end{itemize}
+\end{multicols}
+
+% ── Allowed STL Usage ──
+\subsection{Allowed STL Usage}
+
+You \textbf{may} use the following standard library components:
+
+\begin{itemize}
+  \item \stdstr{} for text handling
+  \item \stdfstream{} / \stdiostream{} for I/O operations
+  \item \code{<algorithm>} on primitive arrays
+  \item Smart pointers (\stduptr, \stdsptr)
+  \item \code{<functional>} for function objects
+\end{itemize}
+
+% ── Acceptable Custom Data Structures ──
+\subsection{Acceptable Custom Data Structures}
+
+\subsubsection{Linear}
+
+\begin{multicols}{2}
+\begin{itemize}
+  \item Singly Linked List
+  \item Doubly Linked List
+  \item Circular Linked List
+  \item Skip List
+  \item Stack (linked, pointer-based)
+  \item Queue (linked, pointer-based)
+  \item Deque (linked, pointer-based)
+\end{itemize}
+\end{multicols}
+
+\subsubsection{Tree}
+
+\begin{multicols}{2}
+\begin{itemize}
+  \item Binary Tree
+  \item Binary Search Tree (BST)
+  \item AVL Tree
+  \item Red-Black Tree
+  \item B-Tree / B+ Tree
+  \item Trie
+  \item Segment Tree
+  \item Fenwick Tree
+  \item Heap (pointer-based)
+\end{itemize}
+\end{multicols}
+
+\subsubsection{Hash-Based}
+
+\begin{multicols}{2}
+\begin{itemize}
+  \item Hash Table (chaining)
+  \item Hash Map
+  \item Hash Set
+  \item Bloom Filter
+\end{itemize}
+\end{multicols}
+
+\subsubsection{Graph}
+
+\begin{multicols}{2}
+\begin{itemize}
+  \item Adjacency List
+  \item Adjacency Matrix
+  \item Edge List
+  \item Weighted / Directed / Undirected Graph
+\end{itemize}
+\end{multicols}
+
+\subsubsection{Specialized}
+
+\begin{multicols}{2}
+\begin{itemize}
+  \item Priority Queue (pointer-based heap)
+  \item Disjoint Set (Union-Find)
+  \item LRU Cache
+\end{itemize}
+\end{multicols}
+
+% ── Implementation Requirements ──
+\subsection{Implementation Requirements}
+
+\begin{constraintbox}[Critical Requirement]
+\textbf{ALL} custom data structures must use \textbf{pointer-based implementation}. Array-based implementations are \textbf{NOT} allowed.
+\end{constraintbox}
+
+\begin{center}
+\begin{tabular}{l l}
+\hline
+\rowcolor{tableheader} \textbf{Data Structure} & \textbf{Required Implementation} \\
+\hline
+Linked List & \code{Node*} with \code{next}/\code{prev} pointers \\
+Stack & Linked with \code{top} pointer \\
+Queue & Linked with \code{front}/\code{rear} pointers \\
+Heap & Node-based with \code{parent}/\code{left}/\code{right} pointers \\
+Trees & \code{Node*} with child/parent pointers \\
+Graph & Adjacency list using linked nodes \\
+Hash Table & Chaining with pointer-based linked buckets \\
+\hline
+\end{tabular}
+\end{center}
+
+\vspace{8pt}
+
+\textbf{Allowed pointer types:}
+\begin{itemize}
+  \item Raw pointers with \code{new}/\code{delete}
+  \item Smart pointers (\stduptr, \stdsptr)
+\end{itemize}
+
+\textbf{NOT allowed:}
+\begin{itemize}
+  \item \code{T[]} arrays as primary storage
+  \item Dynamic arrays (\code{T* arr = new T[n]}) for node storage
+  \item Index-based heap implementation
+  \item Array-based stack or queue
+\end{itemize}

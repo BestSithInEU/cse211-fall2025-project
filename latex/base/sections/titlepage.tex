@@ -1,0 +1,38 @@
+% sections/titlepage.tex — Title page
+
+\begin{titlepage}
+\begin{center}
+
+\vspace*{2cm}
+
+% University logo
+\includegraphics[width=5cm]{\thelogopath}
+
+\vspace{0.8cm}
+
+{\large\textsc{\theuniversity}}\\[0.3cm]
+{\normalsize\textsc{\thedepartment}}
+
+\vspace{1.5cm}
+
+\rule{\textwidth}{0.4pt}\\[0.6cm]
+{\Huge\bfseries \thecourstitle}\\[0.3cm]
+{\Large\bfseries \thedoctype}\\[0.2cm]
+{\normalsize \thedocsubtitle}\\[0.4cm]
+\rule{\textwidth}{0.4pt}
+
+\vspace{2cm}
+
+{\large\textsc{\thesemester}}
+
+\vspace{1.5cm}
+
+{\normalsize\textbf{Instructor:} \theinstructorname}\\[0.3cm]
+{\normalsize\textbf{Project Coordinator:} \thecoordinatorname}
+
+\vfill
+
+{\small\textit{\thefooternote}}
+
+\end{center}
+\end{titlepage}

@@ -1,0 +1,36 @@
+\documentclass[12pt, a4paper]{article}
+
+% ── Metadata (must come before shared packages) ──
+% Each project overrides these in its own metadata.tex
+\input{metadata}
+
+% ── Shared configuration ──
+\input{../../shared/packages}
+\input{../../shared/colors}
+\input{../../shared/styles}
+\input{../../shared/commands}
+\input{../../shared/layout}
+
+% ── PDF metadata ──
+\hypersetup{
+  pdftitle={\thecourstitle{} --- \theprojid: \theprojtitle},
+  pdfauthor={\theinstructorname},
+  pdfsubject={\thesemester},
+}
+
+\begin{document}
+
+% ── Header (inline, no separate title page for project docs) ──
+\begin{center}
+{\Large\bfseries \thecourstitle}\\[0.2cm]
+{\normalsize \thedoctype}\\[0.4cm]
+{\LARGE\bfseries \theprojid: \theprojtitle}\\[0.3cm]
+{\normalsize \theuniversity{} -- \thesemestershort}
+\end{center}
+
+\vspace{1cm}
+
+% ── Project content ──
+\input{content}
+
+\end{document}

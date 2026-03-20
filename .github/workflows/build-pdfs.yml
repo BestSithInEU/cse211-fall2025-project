@@ -1,0 +1,68 @@
+name: Build & Release PDFs
+
+on:
+  push:
+    branches: [master]
+    paths: ['latex/**']
+    tags: ['v*']
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Install TeX Live
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y texlive-latex-recommended texlive-latex-extra texlive-fonts-recommended texlive-fonts-extra
+
+      - name: Build all PDFs
+        run: cd latex && make all
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: project-pdfs
+          path: latex/build/*.pdf
+
+  release:
+    needs: build
+    if: startsWith(github.ref, 'refs/tags/v')
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Install TeX Live
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y texlive-latex-recommended texlive-latex-extra texlive-fonts-recommended texlive-fonts-extra
+
+      - name: Build all PDFs
+        run: cd latex && make all
+
+      - name: Create Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: latex/build/*.pdf
+          generate_release_notes: true
+          body: |
+            ## CSE 211 — Data Structures Term Project
+
+            ### Documents
+            | Document | Description |
+            |:---------|:------------|
+            | `base.pdf` | General specification with shared requirements |
+            | `PROJ-01.pdf` — `PROJ-25.pdf` | Individual project assignments |
+
+            ---
+            > **Start with `base.pdf`** before reading your assigned project document.
+
+            *Yeditepe University • ${{ github.ref_name }}*

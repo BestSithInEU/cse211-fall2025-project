@@ -1,0 +1,54 @@
+\section{Problem Statement}
+
+Design and implement an SIR (Susceptible--Infected--Recovered) epidemic simulator on a contact graph. Nodes represent individuals with a health state (S, I, or R), and edges represent contact relationships with varying transmission weights. The simulator runs discrete time steps where infected nodes may transmit to susceptible neighbors and may recover. Evaluate the impact of interventions such as vaccination, quarantine, social distancing, and contact tracing on epidemic dynamics.
+
+\section{Core Concepts}
+
+\begin{itemize}
+  \item \textbf{SIR Model:} Individuals transition from Susceptible to Infected to Recovered. Once recovered, they are immune and cannot be reinfected.
+  \item \textbf{Transmission Probability:} The probability that an infected individual transmits to a susceptible contact per time step, typically 1--10\% per contact.
+  \item \textbf{Recovery Rate:} The probability that an infected individual recovers at each time step. Higher rates mean shorter infectious periods.
+  \item \textbf{Basic Reproduction Number ($R_0$):} The average number of secondary infections caused by one infected individual. If $R_0 > 1$, the epidemic grows; if $R_0 < 1$, it dies out.
+  \item \textbf{Herd Immunity Threshold:} The fraction of the population that must be immune to stop epidemic spread, calculated as $1 - 1/R_0$.
+\end{itemize}
+
+\section{Key Challenges}
+
+\begin{itemize}
+  \item \textbf{Efficient Transmission:} Only iterate over edges of currently infected nodes rather than the entire graph at each time step.
+  \item \textbf{Stochastic Simulation:} Transmission and recovery are probabilistic. Multiple simulation runs are needed to obtain statistically meaningful results.
+  \item \textbf{Realistic Contact Networks:} Model clustered social groups (households, workplaces, schools) rather than random graphs to capture real-world contact patterns.
+  \item \textbf{Intervention Timing:} Deploying interventions too early wastes resources; too late renders them ineffective. The simulator should support configurable intervention triggers.
+  \item \textbf{Scalability:} The simulator must handle contact graphs with 100K+ nodes and millions of edges efficiently.
+\end{itemize}
+
+\section{Sample Input}
+
+\begin{lstlisting}[style=json]
+{
+  "population": [
+    {"id": "p1", "state": "I", "group": "household_1"},
+    {"id": "p2", "state": "S", "group": "household_1"},
+    {"id": "p3", "state": "S", "group": "household_2"},
+    {"id": "p4", "state": "S", "group": "workplace_1"},
+    {"id": "p5", "state": "S", "group": "household_2"},
+    {"id": "p6", "state": "S", "group": "workplace_1"}
+  ],
+  "contacts": [
+    {"from": "p1", "to": "p2", "type": "household", "weight": 0.8},
+    {"from": "p2", "to": "p4", "type": "workplace", "weight": 0.3},
+    {"from": "p3", "to": "p5", "type": "household", "weight": 0.8},
+    {"from": "p4", "to": "p6", "type": "workplace", "weight": 0.3},
+    {"from": "p3", "to": "p4", "type": "workplace", "weight": 0.3}
+  ],
+  "parameters": {
+    "transmission_prob": 0.05,
+    "recovery_prob": 0.1,
+    "simulation_days": 90
+  }
+}
+\end{lstlisting}
+
+\vfill
+\noindent\rule{\textwidth}{0.4pt}
+{\small\textit{For full project requirements, STL restrictions, submission format, and grading criteria, refer to \textbf{base.pdf} (available on the \href{https://github.com/BestSithInEU/cse211-term-projects/releases}{Releases page}).}}

@@ -1,0 +1,52 @@
+\section{Problem Statement}
+
+Design and implement an airline crew rostering system that assigns flight crews to flights while respecting rest periods, qualification requirements, and working hour limits. The system must build pairings --- multi-day trip sequences that start and end at a crew member's base --- and then match crew members to pairings so that all flights are covered. The solution must comply with aviation regulations, handle fairness through seniority-based bidding, and support disruption recovery for delayed or canceled flights.
+
+\section{Core Concepts}
+
+\begin{itemize}
+  \item \textbf{Pairing:} A sequence of flights forming a round trip that starts and ends at a crew base, typically spanning 1 to 4 days. Each pairing is a self-contained work assignment.
+  \item \textbf{Duty Period:} A block of consecutive working time within a pairing, limited to 10--14 hours depending on regulations. A pairing may contain multiple duty periods separated by rest.
+  \item \textbf{Rest Requirement:} A minimum number of hours off between consecutive duty periods, ensuring crew members have adequate recovery time.
+  \item \textbf{Qualification:} Crew members must be certified for the specific aircraft type they operate. A crew member without the required qualification cannot be assigned to that flight.
+  \item \textbf{Deadheading:} A crew member traveling as a passenger on a flight to reposition to a different airport for their next duty assignment. Deadheading counts as cost but not duty time.
+\end{itemize}
+
+\section{Key Challenges}
+
+\begin{itemize}
+  \item \textbf{Pairing Generation:} Enumerating legal flight sequences that form valid pairings is combinatorially explosive and requires pruning infeasible branches early.
+  \item \textbf{Crew-Pairing Matching:} Assigning pairings to crew members such that every flight is covered exactly once while respecting qualifications and base assignments.
+  \item \textbf{Cumulative Limits:} Tracking and enforcing weekly and monthly flight hour limits for each crew member across multiple pairings.
+  \item \textbf{Fairness:} Implementing seniority-based bidding where senior crew members have priority in selecting preferred pairings and schedules.
+  \item \textbf{Disruption Handling:} Reassigning crew when flights are delayed or canceled, minimizing cascading disruptions while maintaining regulatory compliance.
+\end{itemize}
+
+\section{Sample Input}
+
+\begin{lstlisting}[style=json, caption={data/input\_sample.json}]
+{
+  "flights": [
+    {"id": "FL100", "from": "IST", "to": "ESB", "depart": "2026-04-01T08:00", "arrive": "2026-04-01T09:15", "aircraft": "A320"},
+    {"id": "FL101", "from": "ESB", "to": "ADB", "depart": "2026-04-01T10:30", "arrive": "2026-04-01T11:45", "aircraft": "A320"},
+    {"id": "FL102", "from": "ADB", "to": "IST", "depart": "2026-04-01T14:00", "arrive": "2026-04-01T15:20", "aircraft": "B737"},
+    {"id": "FL103", "from": "IST", "to": "ADB", "depart": "2026-04-02T07:00", "arrive": "2026-04-02T08:20", "aircraft": "A320"},
+    {"id": "FL104", "from": "ADB", "to": "ESB", "depart": "2026-04-02T10:00", "arrive": "2026-04-02T11:30", "aircraft": "B737"}
+  ],
+  "crew": [
+    {"id": "CR01", "role": "captain", "base": "IST", "qualifications": ["A320", "B737"], "seniority": 15},
+    {"id": "CR02", "role": "captain", "base": "IST", "qualifications": ["A320"], "seniority": 8},
+    {"id": "CR03", "role": "first_officer", "base": "ESB", "qualifications": ["A320", "B737"], "seniority": 5},
+    {"id": "CR04", "role": "first_officer", "base": "IST", "qualifications": ["B737"], "seniority": 3}
+  ],
+  "regulations": {
+    "max_duty_hours": 12,
+    "min_rest_hours": 10,
+    "max_flight_hours_monthly": 100
+  }
+}
+\end{lstlisting}
+
+\vfill
+\noindent\rule{\textwidth}{0.4pt}
+{\small\textit{For full project requirements, STL restrictions, submission format, and grading criteria, refer to \textbf{base.pdf} (available on the \href{https://github.com/BestSithInEU/cse211-term-projects/releases}{Releases page}).}}

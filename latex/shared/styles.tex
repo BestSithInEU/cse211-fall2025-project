@@ -1,0 +1,181 @@
+% shared/styles.tex — Visual styles for listings, boxes, tables, sections
+
+% ══════════════════════════════════════════════════════════════════════
+% Section formatting
+% ══════════════════════════════════════════════════════════════════════
+\titleformat{\section}
+  {\Large\bfseries\color{sectioncolor}}
+  {\thesection}{1em}{}
+
+\titleformat{\subsection}
+  {\large\bfseries\color{sectioncolor}}
+  {\thesubsection}{1em}{}
+
+\titleformat{\subsubsection}
+  {\normalsize\bfseries\color{sectioncolor}}
+  {\thesubsubsection}{1em}{}
+
+% ══════════════════════════════════════════════════════════════════════
+% Hyperref configuration
+% ══════════════════════════════════════════════════════════════════════
+\hypersetup{
+  colorlinks=true,
+  linkcolor=black,
+  urlcolor=linkcolor,
+  citecolor=linkcolor,
+  bookmarksnumbered=true,
+  pdfstartview=FitH,
+}
+
+% ══════════════════════════════════════════════════════════════════════
+% Code listing styles
+% ══════════════════════════════════════════════════════════════════════
+\lstdefinestyle{basestyle}{
+  backgroundcolor=\color{codebg},
+  basicstyle=\small\ttfamily,
+  breakatwhitespace=false,
+  breaklines=true,
+  captionpos=b,
+  keepspaces=true,
+  numbers=left,
+  numbersep=8pt,
+  numberstyle=\scriptsize\color{codeline},
+  showspaces=false,
+  showstringspaces=false,
+  showtabs=false,
+  tabsize=4,
+  frame=single,
+  rulecolor=\color{coderule},
+  framesep=4pt,
+  xleftmargin=16pt,
+  framexleftmargin=16pt,
+}
+
+\lstdefinestyle{cpp}{
+  style=basestyle,
+  language=C++,
+  keywordstyle=\bfseries\color{codekeyword},
+  commentstyle=\color{codecomment},
+  stringstyle=\color{codestring},
+  morekeywords={nullptr, noexcept, override, final, constexpr, auto, size_t},
+}
+
+\lstdefinestyle{python}{
+  style=basestyle,
+  language=Python,
+  keywordstyle=\bfseries\color{codekeyword},
+  commentstyle=\color{codecomment},
+  stringstyle=\color{codestring},
+}
+
+\lstdefinestyle{bash}{
+  style=basestyle,
+  language=bash,
+  keywordstyle=\bfseries\color{codekeyword},
+  commentstyle=\color{codecomment},
+  stringstyle=\color{codestring},
+}
+
+\lstdefinestyle{json}{
+  style=basestyle,
+  keywordstyle=\bfseries\color{codekeyword},
+  commentstyle=\color{codecomment},
+  stringstyle=\color{codestring},
+  string=[s]{"}{"},
+  morecomment=[l]{//},
+}
+
+\lstdefinestyle{yaml}{
+  style=basestyle,
+  keywordstyle=\bfseries\color{codekeyword},
+  commentstyle=\color{codecomment},
+  stringstyle=\color{codestring},
+  morecomment=[l]{\#},
+}
+
+\lstdefinestyle{makefile}{
+  style=basestyle,
+  language=make,
+  keywordstyle=\bfseries\color{codekeyword},
+  commentstyle=\color{codecomment},
+  stringstyle=\color{codestring},
+}
+
+\lstdefinestyle{xml}{
+  style=basestyle,
+  language=XML,
+  keywordstyle=\bfseries\color{codekeyword},
+  commentstyle=\color{codecomment},
+  stringstyle=\color{codestring},
+}
+
+\lstdefinestyle{toml}{
+  style=basestyle,
+  commentstyle=\color{codecomment},
+  stringstyle=\color{codestring},
+  morecomment=[l]{\#},
+  string=[s]{"}{"},
+}
+
+\lstdefinestyle{plaintext}{
+  style=basestyle,
+  numbers=none,
+  xleftmargin=4pt,
+  framexleftmargin=4pt,
+}
+
+\lstdefinestyle{tree}{
+  basicstyle=\small\ttfamily,
+  numbers=none,
+  frame=none,
+  backgroundcolor=,
+  xleftmargin=1em,
+  breaklines=true,
+}
+
+% Default style
+\lstset{style=cpp}
+
+% ══════════════════════════════════════════════════════════════════════
+% tcolorbox styles
+% ══════════════════════════════════════════════════════════════════════
+
+% Hard constraint / warning box
+\newtcolorbox{constraintbox}[1][]{
+  colback=boxbg,
+  colframe=boxborder,
+  fonttitle=\bfseries\centering,
+  title={#1},
+  boxrule=0.8pt,
+  arc=0pt,
+  left=8pt,
+  right=8pt,
+  top=6pt,
+  bottom=6pt,
+}
+
+% Info box (lighter)
+\newtcolorbox{infobox}[1][]{
+  colback=blue!3,
+  colframe=sectioncolor,
+  fonttitle=\bfseries,
+  title={#1},
+  boxrule=0.5pt,
+  arc=2pt,
+  left=8pt,
+  right=8pt,
+}
+
+% Format flexibility / note box
+\newtcolorbox{notebox}[1][]{
+  colback=boxbg,
+  colframe=boxborder,
+  fonttitle=\bfseries,
+  title={#1},
+  boxrule=0.5pt,
+  arc=0pt,
+  left=8pt,
+  right=8pt,
+  top=6pt,
+  bottom=6pt,
+}

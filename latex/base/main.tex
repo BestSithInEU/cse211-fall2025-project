@@ -1,0 +1,51 @@
+\documentclass[12pt, a4paper]{article}
+
+% ── Metadata (must come before packages that use these commands) ──
+\input{metadata}
+
+% ── Shared configuration ──
+\input{../shared/packages}
+\input{../shared/colors}
+\input{../shared/styles}
+\input{../shared/commands}
+\input{../shared/layout}
+
+% ── PDF metadata ──
+\hypersetup{
+  pdftitle={\thecourstitle{} --- \thedoctype},
+  pdfauthor={\theinstructorname},
+  pdfsubject={\thesemester},
+}
+
+\begin{document}
+
+% ── Title page ──
+\input{sections/titlepage}
+
+% ── Table of contents ──
+\newpage
+\tableofcontents
+\newpage
+
+% ── TL;DR ──
+\input{sections/tldr}
+
+% ── Main sections ──
+\input{sections/01-project-overview}
+\input{sections/02-technical-requirements}
+\input{sections/03-custom-data-structures}
+\input{sections/04-frontend-interface}
+\input{sections/05-code-modularization}
+\input{sections/06-data-directory}
+\input{sections/07-uml-diagrams}
+\input{sections/08-testing-requirements}
+\input{sections/09-code-examples}
+\input{sections/10-submission-guidelines}
+\input{sections/11-presentation-requirements}
+
+% ── Appendices ──
+\appendix
+\input{appendices/A-test-data-examples}
+\input{appendices/B-advanced-topics}
+
+\end{document}

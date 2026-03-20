@@ -1,0 +1,49 @@
+\section{Problem Statement}
+
+Design and implement a spell checker and corrector that uses a trie for dictionary storage and Levenshtein (edit) distance for finding similar words as correction suggestions. The system must support prefix-based operations including autocomplete, and rank correction suggestions by a combination of edit distance and word frequency. Given a dictionary of words with frequency counts, the system must efficiently check and correct misspelled words.
+
+\section{Core Concepts}
+
+\begin{itemize}
+  \item \textbf{Trie (Prefix Tree):} A tree where each node represents a character, the path from root to a node spells out a prefix, and nodes marked as terminal indicate valid dictionary words. Shared prefixes share structure.
+  \item \textbf{Levenshtein Distance:} The minimum number of single-character edit operations --- insertion, deletion, or substitution --- needed to transform one string into another.
+  \item \textbf{Edit Operations:} The three fundamental transformations: inserting a character, deleting a character, and substituting one character for another. Some variants also include transposition of adjacent characters.
+  \item \textbf{Word Frequency:} A count or probability associated with each dictionary word, reflecting how common it is in natural text. Common words like ``their'' are preferred over rare words when both are equally close edits.
+  \item \textbf{Candidate Generation:} Finding all dictionary words within a given edit distance $k$ of the query word. The trie structure enables pruning entire subtrees when the minimum possible edit distance already exceeds the threshold.
+\end{itemize}
+
+\section{Key Challenges}
+
+\begin{itemize}
+  \item \textbf{Trie Construction:} Efficiently inserting a large dictionary (100K+ words) into the trie while minimizing memory overhead per node.
+  \item \textbf{Edit Distance Computation:} The standard dynamic programming algorithm runs in $O(mn)$ time for strings of length $m$ and $n$. Early termination when the distance exceeds the threshold is essential for performance.
+  \item \textbf{Fuzzy Search in Trie:} Simultaneously traversing the trie and computing edit distance, pruning branches where the minimum possible distance to any word in the subtree already exceeds the allowed threshold.
+  \item \textbf{Ranking Suggestions:} Combining edit distance and word frequency into a single score to rank candidates. A word with distance 1 and high frequency should rank above a word with distance 1 and low frequency.
+  \item \textbf{Performance:} Checking an entire document means issuing many queries against the dictionary. Caching results for repeated words and batching similar queries are important optimizations.
+\end{itemize}
+
+\section{Sample Input}
+
+\begin{lstlisting}[style=json, caption={data/input\_sample.json}]
+{
+  "dictionary": [
+    {"word": "the", "frequency": 69975},
+    {"word": "their", "frequency": 8619},
+    {"word": "there", "frequency": 8573},
+    {"word": "then", "frequency": 7281},
+    {"word": "three", "frequency": 5045},
+    {"word": "tree", "frequency": 1243},
+    {"word": "these", "frequency": 4742},
+    {"word": "them", "frequency": 4580},
+    {"word": "than", "frequency": 4321},
+    {"word": "think", "frequency": 3987}
+  ],
+  "check_words": ["teh", "thier", "ther", "tre", "thnik"],
+  "max_edit_distance": 2,
+  "max_suggestions": 5
+}
+\end{lstlisting}
+
+\vfill
+\noindent\rule{\textwidth}{0.4pt}
+{\small\textit{For full project requirements, STL restrictions, submission format, and grading criteria, refer to \textbf{base.pdf} (available on the \href{https://github.com/BestSithInEU/cse211-term-projects/releases}{Releases page}).}}

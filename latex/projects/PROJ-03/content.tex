@@ -1,0 +1,54 @@
+\section{Problem Statement}
+
+Design and implement a rebalancing planner for a bike-sharing system. The city is modeled as a graph where nodes represent bike stations with current inventory, capacity, and target bike counts, and edges represent roads with travel times. Rebalancing trucks start from depots, pick up bikes from surplus stations, deliver them to deficit stations, and return to their depots. Your system must plan efficient truck routes to bring all stations as close to their target levels as possible.
+
+\section{Core Concepts}
+
+\begin{itemize}
+  \item \textbf{Station Inventory:} Each station has a current bike count, a total number of docks, and a target number of bikes for balanced service.
+  \item \textbf{Surplus/Deficit:} Stations with more bikes than the target have surplus; those with fewer have deficit. The goal is to transfer bikes from surplus to deficit stations.
+  \item \textbf{Rebalancing Truck:} Each truck has a fixed carrying capacity and starts from a depot. Trucks pick up and drop off bikes along their route.
+  \item \textbf{Demand Prediction:} Historical usage patterns indicate expected demand, informing target levels and rebalancing urgency.
+  \item \textbf{Service Level:} A metric measuring how well the system meets user demand, penalizing both empty stations and full stations.
+\end{itemize}
+
+\section{Key Challenges}
+
+\begin{itemize}
+  \item \textbf{Route Optimization:} Solve a Pickup and Delivery Problem variant where trucks must collect bikes from surplus stations and deliver to deficit stations efficiently.
+  \item \textbf{Load Balancing:} Respect truck capacity constraints, ensuring the truck never carries more bikes than its capacity allows.
+  \item \textbf{Prioritization:} Determine which stations to visit first based on urgency, with stations near empty or near full receiving higher priority.
+  \item \textbf{Multiple Trucks:} Partition the rebalancing work among multiple trucks, assigning stations to trucks to minimize total travel time.
+  \item \textbf{Dynamic Updates:} Adapt plans as bikes are rented and returned during the rebalancing operation, changing station inventories in real time.
+\end{itemize}
+
+\section{Sample Input}
+
+\begin{lstlisting}[style=json, caption={data/input\_sample.json}]
+{
+  "stations": [
+    {"id": "S1", "name": "Central Park", "capacity": 20, "current_bikes": 15, "target": 10},
+    {"id": "S2", "name": "University", "capacity": 15, "current_bikes": 2, "target": 8},
+    {"id": "S3", "name": "Train Station", "capacity": 25, "current_bikes": 22, "target": 12},
+    {"id": "S4", "name": "Shopping Mall", "capacity": 10, "current_bikes": 1, "target": 5},
+    {"id": "D1", "name": "Depot", "capacity": 0, "current_bikes": 0, "target": 0}
+  ],
+  "trucks": [
+    {"id": "T1", "capacity": 10, "current_bikes": 0, "position": "D1"},
+    {"id": "T2", "capacity": 8, "current_bikes": 0, "position": "D1"}
+  ],
+  "edges": [
+    {"from": "D1", "to": "S1", "travel_time": 10},
+    {"from": "S1", "to": "S2", "travel_time": 7},
+    {"from": "S2", "to": "S3", "travel_time": 12},
+    {"from": "S3", "to": "S4", "travel_time": 5},
+    {"from": "S4", "to": "D1", "travel_time": 8},
+    {"from": "S1", "to": "S3", "travel_time": 15},
+    {"from": "S2", "to": "S4", "travel_time": 9}
+  ]
+}
+\end{lstlisting}
+
+\vfill
+\noindent\rule{\textwidth}{0.4pt}
+{\small\textit{For full project requirements, STL restrictions, submission format, and grading criteria, refer to \textbf{base.pdf} (available on the \href{https://github.com/BestSithInEU/cse211-term-projects/releases}{Releases page}).}}

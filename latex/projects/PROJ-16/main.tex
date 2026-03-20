@@ -1,0 +1,22 @@
+\documentclass[12pt, a4paper]{article}
+\input{metadata}
+\input{../../shared/packages}
+\input{../../shared/colors}
+\input{../../shared/styles}
+\input{../../shared/commands}
+\input{../../shared/layout}
+\hypersetup{
+  pdftitle={\thecourstitle{} --- \theprojid: \theprojtitle},
+  pdfauthor={\theinstructorname},
+  pdfsubject={\thesemester},
+}
+\begin{document}
+\begin{center}
+{\Large\bfseries \thecourstitle}\\[0.2cm]
+{\normalsize \thedoctype}\\[0.4cm]
+{\LARGE\bfseries \theprojid: \theprojtitle}\\[0.3cm]
+{\normalsize \theuniversity{} -- \thesemestershort}
+\end{center}
+\vspace{1cm}
+\input{content}
+\end{document}

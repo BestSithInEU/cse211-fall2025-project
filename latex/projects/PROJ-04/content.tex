@@ -1,0 +1,56 @@
+\section{Problem Statement}
+
+Design and implement a garbage collection system that predicts bin overflow, schedules collection trucks, and simulates multi-day operations. The city is modeled as a road graph where nodes represent garbage bins with fill levels and fill rates, depots, and disposal facilities. Edges represent roads with distances. Your system must predict which bins will overflow, plan efficient collection routes, and simulate operations over multiple days.
+
+\section{Core Concepts}
+
+\begin{itemize}
+  \item \textbf{Fill Rate:} Each bin fills at a rate expressed as a percentage of capacity per day, varying by location and day of the week.
+  \item \textbf{Overflow Prediction:} Using current fill levels and fill rates, predict when each bin will reach capacity and require collection.
+  \item \textbf{Collection Route:} A truck's planned path visiting a subset of bins for emptying, starting and ending at a depot with a stop at a disposal facility.
+  \item \textbf{Service Frequency:} How often each bin is collected, which should adapt based on fill rate to prevent overflow while minimizing unnecessary visits.
+  \item \textbf{Disposal Facility:} Designated locations where trucks offload collected garbage before continuing their route or returning to the depot.
+\end{itemize}
+
+\section{Key Challenges}
+
+\begin{itemize}
+  \item \textbf{Prediction Accuracy:} Use historical fill rate data to accurately predict overflow times, accounting for variability across days and locations.
+  \item \textbf{Route Efficiency:} Balance geographic clustering of bins for short routes against priority-based collection of bins nearing overflow.
+  \item \textbf{Truck Capacity Management:} Plan routes so trucks visit disposal facilities before exceeding their load capacity.
+  \item \textbf{Multi-Day Simulation:} Simulate operations over several days, updating bin fill levels, tracking collection history, and evaluating system performance.
+  \item \textbf{Dynamic Rescheduling:} Adjust planned routes when actual fill levels deviate from predictions or when trucks break down.
+\end{itemize}
+
+\section{Sample Input}
+
+\begin{lstlisting}[style=json, caption={data/input\_sample.json}]
+{
+  "bins": [
+    {"id": "B1", "location": {"x": 2, "y": 5}, "capacity": 100, "current_fill": 75, "fill_rate": 15},
+    {"id": "B2", "location": {"x": 8, "y": 3}, "capacity": 80, "current_fill": 20, "fill_rate": 10},
+    {"id": "B3", "location": {"x": 5, "y": 9}, "capacity": 120, "current_fill": 90, "fill_rate": 25},
+    {"id": "B4", "location": {"x": 1, "y": 1}, "capacity": 100, "current_fill": 40, "fill_rate": 8}
+  ],
+  "trucks": [
+    {"id": "T1", "capacity": 200, "current_load": 0, "position": "DEPOT1"},
+    {"id": "T2", "capacity": 150, "current_load": 0, "position": "DEPOT1"}
+  ],
+  "facilities": [
+    {"id": "DEPOT1", "type": "depot", "x": 0, "y": 0},
+    {"id": "DISP1", "type": "disposal", "x": 10, "y": 10}
+  ],
+  "edges": [
+    {"from": "DEPOT1", "to": "B1", "distance": 5.4},
+    {"from": "B1", "to": "B2", "distance": 6.3},
+    {"from": "B2", "to": "B3", "distance": 6.7},
+    {"from": "B3", "to": "DISP1", "distance": 5.1},
+    {"from": "B4", "to": "DEPOT1", "distance": 1.4},
+    {"from": "DISP1", "to": "DEPOT1", "distance": 14.1}
+  ]
+}
+\end{lstlisting}
+
+\vfill
+\noindent\rule{\textwidth}{0.4pt}
+{\small\textit{For full project requirements, STL restrictions, submission format, and grading criteria, refer to \textbf{base.pdf} (available on the \href{https://github.com/BestSithInEU/cse211-term-projects/releases}{Releases page}).}}

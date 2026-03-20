@@ -1,0 +1,79 @@
+% sections/tldr.tex — TL;DR Quick Start Guide
+
+\section*{TL;DR --- Quick Start Guide}
+\addcontentsline{toc}{section}{TL;DR --- Quick Start Guide}
+
+This page summarizes everything you need to know to succeed. Read the full document for details.
+
+% ── What You're Building ──
+\subsection*{What You're Building}
+\addcontentsline{toc}{subsection}{What You're Building}
+
+A \cpp{} project using custom data structures (no STL containers), includes a visual frontend, reads from data files, and is well-tested.
+
+% ── Hard Requirements ──
+\subsection*{Hard Requirements (Non-Negotiable)}
+
+\begin{constraintbox}[MANDATORY --- Missing any of these = significant point loss]
+\begin{enumerate}
+  \item \textbf{Custom Data Structures} -- Implement your own (no \stdvec, \stdmap, etc.)
+  \item \textbf{Makefile or CMake} -- Must have \make, \maketest, \makeclean{} targets
+  \item \textbf{Data Directory} -- Read input from \filepath{data/} folder (multiple test files)
+  \item \textbf{Visual Frontend} -- GUI showing your solution (Qt, SDL, ImGui, etc.) --- \textbf{NOTE:} TUI is NOT allowed
+  \item \textbf{Testing} -- Unit tests + edge cases + integration tests
+  \item \textbf{UML Diagrams} -- Class diagram + one behavioral diagram
+  \item \textbf{Modular Code} -- Separate headers/source, no 1000-line files
+  \item \textbf{15-min Presentation} -- Demo + code walkthrough + Q\&A
+\end{enumerate}
+\end{constraintbox}
+
+% ── Suggested Milestones ──
+\subsection*{Suggested Milestones}
+
+\begin{center}
+\begin{tabular}{l l}
+\hline
+\rowcolor{tableheader} \textbf{Timeline} & \textbf{Tasks} \\
+\hline
+Week 1--2 & Setup + Data Structures \\
+Week 3--4 & Algorithm + Data Integration \\
+Week 5--6 & Frontend + Tests \\
+Week 7--8 & Integration + UML + Docs \\
+Week 9 & Polish \\
+Final & Submit + Present \\
+\hline
+\end{tabular}
+\end{center}
+
+% ── Project Structure ──
+\subsection*{Project Structure At-a-Glance}
+
+\begin{lstlisting}[style=tree]
+project/
+    include/        <- Headers (.h/.hpp)
+    src/            <- Source files (.cpp) + main.cpp
+    tests/          <- Unit, integration, edge case tests
+    data/           <- Input files (JSON/YAML/CSV/etc.)
+    frontend/       <- GUI code
+    docs/uml/       <- UML diagrams
+    Makefile        <- Build system
+    README.md       <- Project documentation
+\end{lstlisting}
+
+% ── Common Mistakes ──
+\subsection*{Common Mistakes to Avoid}
+
+\begin{itemize}
+  \item Using \stdvec{} or other STL containers as primary data storage
+  \item No Makefile or CMake build system included
+  \item Hardcoded file paths instead of reading from \filepath{data/}
+  \item No tests included in the submission
+  \item All code crammed into a single file
+  \item Frontend that doesn't actually visualize the solution
+\end{itemize}
+
+\noindent\rule{\textwidth}{0.4pt}
+\begin{center}
+\textit{Now read the full document for detailed requirements, examples, and guidelines.}
+\end{center}
+\noindent\rule{\textwidth}{0.4pt}

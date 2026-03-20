@@ -1,0 +1,74 @@
+% appendices/B-advanced-topics.tex — Advanced Topics (Optional)
+
+\section*{Appendix B: Advanced Topics (Optional)}
+\addcontentsline{toc}{section}{Appendix B: Advanced Topics (Optional)}
+
+The following topics are optional enhancements that can improve your project but are not required for a passing grade.
+
+% ── Binary File I/O ──
+\subsection*{B.1 Binary File I/O}
+\addcontentsline{toc}{subsection}{B.1 Binary File I/O}
+
+For maximum performance with large datasets:
+
+\begin{lstlisting}[style=cpp]
+#include <fstream>
+#include <cstdint>
+
+struct Node {
+    uint64_t id;
+    double value;
+};
+
+void write_binary(const std::string& filename,
+                  const std::vector<Node>& nodes) {
+    std::ofstream out(filename, std::ios::binary);
+    uint64_t count = nodes.size();
+    out.write(reinterpret_cast<const char*>(&count), sizeof(count));
+    out.write(reinterpret_cast<const char*>(nodes.data()),
+              nodes.size() * sizeof(Node));
+}
+\end{lstlisting}
+
+% ── Test Data Generation ──
+\subsection*{B.2 Test Data Generation}
+\addcontentsline{toc}{subsection}{B.2 Test Data Generation}
+
+Automate large dataset creation:
+
+\begin{lstlisting}[style=python]
+import json
+import random
+
+def generate_graph(nodes, edges):
+    return {
+        "nodes": [
+            {"id": i, "value": random.randint(1, 1000)}
+            for i in range(nodes)
+        ],
+        "edges": [
+            {"from": random.randint(0, nodes - 1),
+             "to": random.randint(0, nodes - 1)}
+            for _ in range(edges)
+        ]
+    }
+
+if __name__ == "__main__":
+    graph = generate_graph(10000, 50000)
+    with open("data/large.json", "w") as f:
+        json.dump(graph, f, indent=2)
+\end{lstlisting}
+
+% ── Advanced Design Patterns ──
+\subsection*{B.3 Advanced Design Patterns}
+\addcontentsline{toc}{subsection}{B.3 Advanced Design Patterns}
+
+Beyond basic OOP, consider these patterns for complex projects:
+
+\begin{itemize}
+  \item \textbf{Observer Pattern} --- event-driven updates between loosely coupled components.
+  \item \textbf{Strategy Pattern} --- swappable algorithms at runtime without modifying client code.
+  \item \textbf{Factory Pattern} --- creating objects without exposing instantiation logic to the caller.
+\end{itemize}
+
+These are covered in detail in Section 5 (Code Modularization).

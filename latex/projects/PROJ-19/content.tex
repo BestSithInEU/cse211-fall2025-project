@@ -1,0 +1,66 @@
+\section{Problem Statement}
+
+Design and implement a simplified in-memory relational database engine supporting table creation, indexing, and query execution. The engine must support B+ tree indexes for range queries and hash indexes for equality lookups. Implement a query executor capable of handling \texttt{SELECT}, \texttt{WHERE}, \texttt{JOIN}, and \texttt{ORDER BY} operations. Compare the performance of nested-loop join versus hash join on datasets of varying sizes.
+
+\section{Core Concepts}
+
+\begin{itemize}
+  \item \textbf{B+ Tree:} A self-balancing tree structure where all values reside in leaf nodes linked together for efficient range scans. Internal nodes store only keys for routing, with a typical branching factor of 50--200.
+  \item \textbf{Hash Index:} A hash table mapping key values to row locations, providing $O(1)$ average-case equality lookups but unable to support range queries or ordered iteration.
+  \item \textbf{Nested Loop Join:} The simplest join algorithm that compares every pair of rows from the two tables, resulting in $O(N \times M)$ time complexity.
+  \item \textbf{Hash Join:} A two-phase join algorithm that builds a hash table on the smaller table and probes it with rows from the larger table, achieving $O(N + M)$ average-case complexity.
+  \item \textbf{Query Plan:} The sequence of operations (scan, filter, join, sort) chosen to execute a query. The order and choice of algorithms significantly affect performance.
+\end{itemize}
+
+\section{Key Challenges}
+
+\begin{itemize}
+  \item \textbf{B+ Tree Implementation:} Correctly handling node splitting on insertion and node merging on deletion while maintaining the linked-list structure among leaf nodes.
+  \item \textbf{Index Selection:} Deciding when to use an index versus a full table scan based on query predicates and selectivity estimates.
+  \item \textbf{Join Algorithm Selection:} Choosing between hash join (faster for large tables with equality predicates) and nested loop join (simpler, works for arbitrary predicates).
+  \item \textbf{Query Parsing:} Parsing a SQL-like query syntax into an abstract syntax tree that can be translated into an executable query plan.
+  \item \textbf{Memory Management:} Organizing row storage efficiently in memory, handling variable-length fields, and minimizing allocation overhead.
+\end{itemize}
+
+\section{Sample Input}
+
+\begin{lstlisting}[style=json, caption={data/input\_sample.json}]
+{
+  "tables": {
+    "students": {
+      "columns": [
+        {"name": "id", "type": "int", "primary_key": true},
+        {"name": "name", "type": "string", "primary_key": false},
+        {"name": "department_id", "type": "int", "primary_key": false}
+      ],
+      "rows": [
+        [1, "Alice", 10],
+        [2, "Bob", 20],
+        [3, "Charlie", 10],
+        [4, "Diana", 30]
+      ]
+    },
+    "departments": {
+      "columns": [
+        {"name": "id", "type": "int", "primary_key": true},
+        {"name": "name", "type": "string", "primary_key": false}
+      ],
+      "rows": [
+        [10, "Computer Science"],
+        [20, "Mathematics"],
+        [30, "Physics"]
+      ]
+    }
+  },
+  "queries": [
+    "SELECT name FROM students WHERE department_id = 10",
+    "SELECT s.name, d.name FROM students s JOIN departments d ON s.department_id = d.id",
+    "SELECT name FROM students ORDER BY name",
+    "SELECT d.name, COUNT(*) FROM students s JOIN departments d ON s.department_id = d.id GROUP BY d.name"
+  ]
+}
+\end{lstlisting}
+
+\vfill
+\noindent\rule{\textwidth}{0.4pt}
+{\small\textit{For full project requirements, STL restrictions, submission format, and grading criteria, refer to \textbf{base.pdf} (available on the \href{https://github.com/BestSithInEU/cse211-term-projects/releases}{Releases page}).}}

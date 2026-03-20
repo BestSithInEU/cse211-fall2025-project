@@ -1,0 +1,61 @@
+\section{Problem Statement}
+
+Design and implement a Job Shop Scheduler that assigns operations to machines to minimize the makespan --- the total time from the start of the first operation to the completion of the last. Each job consists of an ordered sequence of operations, where each operation requires a specific machine for a specific duration. A machine can process only one operation at a time, and operations within a job must execute in their prescribed order. Job Shop Scheduling is NP-hard, requiring heuristic or metaheuristic approaches for practical instances.
+
+\section{Core Concepts}
+
+\begin{itemize}
+  \item \textbf{Makespan:} The total elapsed time from the start of scheduling to the completion of the last operation across all jobs. This is the primary objective to minimize.
+  \item \textbf{Operation Precedence:} Within each job, operations must execute sequentially --- operation $k+1$ cannot start until operation $k$ finishes.
+  \item \textbf{Machine Contention:} Each machine can process at most one operation at a time. Operations assigned to the same machine must be serialized.
+  \item \textbf{Critical Path:} The longest chain of dependent operations determines the makespan. Identifying and optimizing the critical path is key to reducing overall schedule length.
+  \item \textbf{Dispatching Rule:} Heuristic rules such as Shortest Processing Time (SPT), Longest Processing Time (LPT), and First Come First Served (FCFS) for ordering operations on machines.
+\end{itemize}
+
+\section{Key Challenges}
+
+\begin{itemize}
+  \item \textbf{Solution Representation:} Choosing between operation sequences per machine or explicit start-time assignments, each with different trade-offs for manipulation and evaluation.
+  \item \textbf{Feasibility Enforcement:} Ensuring that decoded schedules respect both operation precedence within jobs and single-operation-at-a-time constraints on machines.
+  \item \textbf{Makespan Computation:} Efficiently decoding a solution representation into a concrete schedule and computing the resulting makespan.
+  \item \textbf{Critical Path Identification:} Determining which operations lie on the critical path and therefore directly influence the makespan.
+  \item \textbf{Local Search Moves:} Improving schedules by swapping adjacent operations on the same machine, ensuring swaps maintain feasibility and reduce makespan.
+\end{itemize}
+
+\section{Sample Input}
+
+\begin{lstlisting}[style=json, caption={data/input\_sample.json}]
+{
+  "machines": ["M1", "M2", "M3"],
+  "jobs": [
+    {
+      "id": "J1",
+      "operations": [
+        {"machine": "M1", "duration": 3},
+        {"machine": "M2", "duration": 2},
+        {"machine": "M3", "duration": 4}
+      ]
+    },
+    {
+      "id": "J2",
+      "operations": [
+        {"machine": "M2", "duration": 5},
+        {"machine": "M3", "duration": 1},
+        {"machine": "M1", "duration": 3}
+      ]
+    },
+    {
+      "id": "J3",
+      "operations": [
+        {"machine": "M3", "duration": 2},
+        {"machine": "M1", "duration": 4},
+        {"machine": "M2", "duration": 3}
+      ]
+    }
+  ]
+}
+\end{lstlisting}
+
+\vfill
+\noindent\rule{\textwidth}{0.4pt}
+{\small\textit{For full project requirements, STL restrictions, submission format, and grading criteria, refer to \textbf{base.pdf} (available on the \href{https://github.com/BestSithInEU/cse211-term-projects/releases}{Releases page}).}}

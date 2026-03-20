@@ -1,0 +1,85 @@
+% sections/02-technical-requirements.tex — Technical Requirements
+
+\section{Technical Requirements}
+
+\begin{constraintbox}[HARD CONSTRAINTS --- NON-NEGOTIABLE]
+\begin{itemize}
+  \item Makefile or CMake with \make, \maketest, \makeclean{} targets
+  \item \cppsev{} or later (\code{g++} / \code{clang++})
+  \item Compiles without errors on submission
+  \item \code{clang-format} configuration file included
+\end{itemize}
+\vspace{4pt}
+\centering\textbf{Missing any of these = cannot grade your project.}
+\end{constraintbox}
+
+% ── Programming Language ──
+\subsection{Programming Language}
+
+\begin{itemize}
+  \item \textbf{Primary Language:} \cpp{} (\cppsev{} or later)
+  \item \textbf{Compiler:} \code{g++} or \code{clang++} with \code{-std=c++17}
+  \item \textbf{Platform:} Linux (Ubuntu 20.04+) or Windows
+\end{itemize}
+
+% ── Build System ──
+\subsection{Build System}
+
+Your project must include a \filename{Makefile} or \filename{CMakeLists.txt}. The following build targets are required:
+
+\begin{center}
+\begin{tabular}{l l}
+\hline
+\rowcolor{tableheader} \textbf{Command} & \textbf{Description} \\
+\hline
+\make{} / \code{cmake --build .} & Build the project \\
+\makerun & Build and run the application \\
+\maketest & Run all tests \\
+\makedeps & Install dependencies \\
+\makeclean & Remove build artifacts \\
+\makedocs & Generate documentation \\
+\hline
+\end{tabular}
+\end{center}
+
+% ── Code Formatting ──
+\subsection{Code Formatting}
+
+All source code must be formatted using \code{clang-format}. Include a \filename{.clang-format} configuration file in your project root.
+
+Recommended styles:
+\begin{itemize}
+  \item Google \cpp{} Style
+  \item LLVM Style
+  \item Mozilla Style
+\end{itemize}
+
+To format all source files:
+
+\begin{lstlisting}[style=bash]
+clang-format -i src/*.cpp include/*.h
+\end{lstlisting}
+
+% ── Documentation Style ──
+\subsection{Documentation Style}
+
+All code documentation must follow Doxygen format:
+
+\begin{lstlisting}[style=cpp]
+/**
+ * @brief Inserts a value into the binary search tree.
+ *
+ * @param value The value to insert.
+ * @return true if the value was inserted successfully.
+ * @throws std::invalid_argument if the value already exists.
+ * @pre The tree is in a valid state.
+ * @post The tree contains the new value and remains balanced.
+ */
+bool insert(int value);
+\end{lstlisting}
+
+Include a \filename{Doxyfile} in your \filepath{docs/} directory. Generate documentation with:
+
+\begin{lstlisting}[style=bash]
+doxygen docs/Doxyfile
+\end{lstlisting}

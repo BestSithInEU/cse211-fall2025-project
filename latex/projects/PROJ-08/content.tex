@@ -1,0 +1,54 @@
+\section{Problem Statement}
+
+Design and implement a coverage path planner for an autonomous multi-room vacuum cleaner. The environment is represented as a grid where each cell is classified as floor, obstacle, wall, doorway, or charging dock. The vacuum has a limited battery that depletes with each movement and must always retain enough charge to return to its dock before running out. The planner must guarantee complete coverage of all reachable floor cells, decompose the space into rooms, and determine an efficient cleaning order with recharge stops as needed.
+
+\section{Core Concepts}
+
+\begin{itemize}
+  \item \textbf{Coverage Path:} A trajectory that visits every reachable floor cell at least once, ensuring the entire space is cleaned.
+  \item \textbf{Battery Budget:} The vacuum must always have sufficient remaining charge to navigate back to the charging dock from its current position.
+  \item \textbf{Boustrophedon Motion:} A back-and-forth mowing pattern that systematically sweeps a rectangular region, minimizing redundant coverage.
+  \item \textbf{Room Decomposition:} Dividing the environment into distinct rooms separated by doorways, allowing each room to be cleaned as an independent unit.
+  \item \textbf{Resumption Strategy:} Determining which uncleaned cell to resume from after a recharge trip, minimizing travel overhead between cleaning sessions.
+\end{itemize}
+
+\section{Key Challenges}
+
+\begin{itemize}
+  \item \textbf{Complete Coverage Guarantee:} Track cleaned versus uncleaned cells and ensure every reachable floor cell is eventually visited.
+  \item \textbf{Battery-Aware Planning:} Before entering a region, verify that the vacuum can clean the area and still return to the dock with charge remaining.
+  \item \textbf{Handling Obstacles:} Navigate around furniture and irregular room shapes that break simple sweeping patterns.
+  \item \textbf{Narrow Passages:} Handle single-cell-wide doorways that connect rooms and constrain movement between them.
+  \item \textbf{Optimal Room Order:} Determine the best sequence of rooms to clean in order to minimize total travel distance between rooms.
+\end{itemize}
+
+\section{Sample Input}
+
+\begin{lstlisting}[style=json, caption={data/input\_sample.json}]
+{
+  "grid": [
+    ["W", "W", "W", "W", "W", "W", "W", "W", "W", "W"],
+    ["W", "F", "F", "F", "W", "F", "F", "F", "F", "W"],
+    ["W", "F", "O", "F", "W", "F", "F", "O", "F", "W"],
+    ["W", "F", "F", "F", "D", "F", "F", "F", "F", "W"],
+    ["W", "F", "F", "F", "W", "F", "O", "F", "F", "W"],
+    ["W", "C", "F", "F", "W", "F", "F", "F", "F", "W"],
+    ["W", "W", "W", "W", "W", "W", "W", "W", "W", "W"]
+  ],
+  "legend": {
+    "W": "wall",
+    "F": "floor",
+    "O": "obstacle",
+    "D": "door",
+    "C": "charging_dock"
+  },
+  "vacuum": {
+    "battery_capacity": 40,
+    "start_position": [5, 1]
+  }
+}
+\end{lstlisting}
+
+\vfill
+\noindent\rule{\textwidth}{0.4pt}
+{\small\textit{For full project requirements, STL restrictions, submission format, and grading criteria, refer to \textbf{base.pdf} (available on the \href{https://github.com/BestSithInEU/cse211-term-projects/releases}{Releases page}).}}

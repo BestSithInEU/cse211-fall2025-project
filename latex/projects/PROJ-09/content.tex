@@ -1,0 +1,61 @@
+\section{Problem Statement}
+
+Design and implement a wildfire spread simulator coupled with a firefighting resource deployment system. The terrain is represented as a grid where each cell has a vegetation type determining its fuel load, an elevation value, and a state (unburned, burning, or burned out). Fire spreads to neighboring cells based on wind direction and speed, terrain slope, and available fuel. The system must deploy limited firefighting teams to create firebreaks or perform direct suppression, protecting high-priority assets such as towns and power lines.
+
+\section{Core Concepts}
+
+\begin{itemize}
+  \item \textbf{Fuel Load:} The vegetation density of a cell determines how long it burns and how intensely. Forest has the highest fuel load, followed by grassland, then rock which does not burn.
+  \item \textbf{Fire Spread Rate:} The rate at which fire moves to adjacent cells, influenced by wind direction and speed, uphill slope acceleration, and the fuel load of the target cell.
+  \item \textbf{Firebreak:} A line of cleared cells that fire cannot cross. Creating a firebreak requires deploying a team for a number of time steps proportional to the vegetation density.
+  \item \textbf{Direct Suppression:} Firefighting teams can extinguish actively burning cells adjacent to their position, preventing further spread from that cell.
+  \item \textbf{Threatened Assets:} High-value locations on the map such as towns and power lines that must be protected, each with an assigned priority level.
+\end{itemize}
+
+\section{Key Challenges}
+
+\begin{itemize}
+  \item \textbf{Spread Model Calibration:} Balance physical realism with computational simplicity in the fire propagation model.
+  \item \textbf{Fire Perimeter Tracking:} Maintain and update the boundary of currently burning cells efficiently as the fire evolves each time step.
+  \item \textbf{Resource Positioning:} Determine where to concentrate limited firefighting teams for maximum impact, choosing between firebreak construction and direct suppression.
+  \item \textbf{Prediction Horizon:} Simulate the fire N steps ahead to anticipate spread direction and pre-position resources accordingly.
+  \item \textbf{Dynamic Wind:} Handle changes in wind direction and speed during the simulation, which can dramatically alter fire behavior.
+\end{itemize}
+
+\section{Sample Input}
+
+\begin{lstlisting}[style=json, caption={data/input\_sample.json}]
+{
+  "terrain": {
+    "width": 8,
+    "height": 6,
+    "cells": [
+      {"x": 0, "y": 0, "fuel": "grassland", "elevation": 100},
+      {"x": 1, "y": 0, "fuel": "grassland", "elevation": 105},
+      {"x": 2, "y": 0, "fuel": "forest", "elevation": 110},
+      {"x": 3, "y": 0, "fuel": "forest", "elevation": 120},
+      {"x": 4, "y": 0, "fuel": "forest", "elevation": 130},
+      {"x": 5, "y": 0, "fuel": "rock", "elevation": 150},
+      {"x": 6, "y": 0, "fuel": "grassland", "elevation": 140},
+      {"x": 7, "y": 0, "fuel": "grassland", "elevation": 135}
+    ]
+  },
+  "fire_origin": [2, 3],
+  "wind": {
+    "direction": "NE",
+    "speed": 15
+  },
+  "assets": [
+    {"type": "town", "location": [6, 1], "priority": 10},
+    {"type": "power_line", "location": [5, 2], "priority": 7}
+  ],
+  "resources": [
+    {"id": "T1", "location": [4, 5], "type": "ground_crew"},
+    {"id": "T2", "location": [7, 3], "type": "ground_crew"}
+  ]
+}
+\end{lstlisting}
+
+\vfill
+\noindent\rule{\textwidth}{0.4pt}
+{\small\textit{For full project requirements, STL restrictions, submission format, and grading criteria, refer to \textbf{base.pdf} (available on the \href{https://github.com/BestSithInEU/cse211-term-projects/releases}{Releases page}).}}

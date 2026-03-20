@@ -1,0 +1,53 @@
+\section{Problem Statement}
+
+Design and implement a power grid simulator that models cascade failures across a transmission network. The grid is represented as a graph where nodes are generators, substations, and load centers, each with associated power values. Edges represent transmission lines with capacity limits. When a line trips due to overload, the redistributed power flow may cause additional lines to exceed their capacity, triggering a cascade of failures. Your system must support N-1 contingency analysis and what-if scenario evaluation to identify critical components.
+
+\section{Core Concepts}
+
+\begin{itemize}
+  \item \textbf{Power Flow:} Generators inject positive power, loads consume negative power. Use a simplified DC power flow model to compute line flows from net injections.
+  \item \textbf{Line Capacity:} Each transmission line has a maximum MW rating. When flow exceeds capacity, the line trips and is removed from the network.
+  \item \textbf{Load Shedding:} When available generation is insufficient to meet demand in a connected component, loads must be disconnected to restore balance.
+  \item \textbf{Cascade Chain:} An initial trigger causes overloads, which trip lines, which redistribute flow, potentially causing further overloads. The process repeats until the network stabilizes.
+  \item \textbf{N-1 Contingency:} Test the impact of every single component failure independently to identify vulnerabilities in the grid.
+\end{itemize}
+
+\section{Key Challenges}
+
+\begin{itemize}
+  \item \textbf{Flow Computation:} Implement a simplified DC power flow algorithm to determine power distribution across transmission lines.
+  \item \textbf{Cascade Simulation:} Iteratively recompute flows after each trip event until no further overloads occur.
+  \item \textbf{Identifying Islands:} Detect disconnected components after line removals and balance generation and load within each island independently.
+  \item \textbf{Critical Component Analysis:} Rank components by the total blackout size their failure would cause.
+  \item \textbf{Visualization:} Display cascade progression over time, showing which lines trip at each step and the resulting network state.
+\end{itemize}
+
+\section{Sample Input}
+
+\begin{lstlisting}[style=json, caption={data/input\_sample.json}]
+{
+  "nodes": [
+    {"id": "G1", "type": "generator", "power": 150},
+    {"id": "G2", "type": "generator", "power": 200},
+    {"id": "S1", "type": "substation", "power": 0},
+    {"id": "S2", "type": "substation", "power": 0},
+    {"id": "L1", "type": "load", "power": -120},
+    {"id": "L2", "type": "load", "power": -100},
+    {"id": "L3", "type": "load", "power": -80}
+  ],
+  "lines": [
+    {"from": "G1", "to": "S1", "capacity": 160, "reactance": 0.05},
+    {"from": "G2", "to": "S2", "capacity": 180, "reactance": 0.04},
+    {"from": "S1", "to": "S2", "capacity": 100, "reactance": 0.06},
+    {"from": "S1", "to": "L1", "capacity": 130, "reactance": 0.03},
+    {"from": "S1", "to": "L3", "capacity": 90, "reactance": 0.05},
+    {"from": "S2", "to": "L2", "capacity": 120, "reactance": 0.04},
+    {"from": "S2", "to": "L3", "capacity": 85, "reactance": 0.07}
+  ],
+  "initial_failure": "S1-S2"
+}
+\end{lstlisting}
+
+\vfill
+\noindent\rule{\textwidth}{0.4pt}
+{\small\textit{For full project requirements, STL restrictions, submission format, and grading criteria, refer to \textbf{base.pdf} (available on the \href{https://github.com/BestSithInEU/cse211-term-projects/releases}{Releases page}).}}

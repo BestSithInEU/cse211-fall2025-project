@@ -1,0 +1,119 @@
+% sections/10-submission-guidelines.tex — Submission Guidelines
+
+\section{Submission Guidelines}
+
+% ── Submission Format ──
+\subsection{Submission Format}
+
+Submit a single \filename{.zip} file named:
+
+\begin{center}
+\texttt{GroupID\_ProblemNumber.zip}
+\end{center}
+
+Example: \filename{Group05\_01.zip}
+
+% ── Required Contents ──
+\subsection{Required Contents}
+
+\begin{lstlisting}[style=tree]
+GroupID_ProblemNumber/
+|-- include/                    All header files
+|-- src/                        All source files
+|-- tests/                      All test files
+|-- data/                       Sample input files
+|-- docs/
+|   |-- uml/                   UML diagrams (PNG/PDF)
+|   |-- design_document.md
+|   +-- presentation.pptx
+|-- Doxyfile
+|-- frontend/                   Frontend implementation
+|-- Makefile                    (or CMakeLists.txt)
+|-- .clang-format
++-- README.md
+\end{lstlisting}
+
+% ── README.md Requirements ──
+\subsection{README.md Requirements}
+
+Your \filename{README.md} must include:
+
+\begin{enumerate}
+  \item \textbf{Project Title} and description
+  \item \textbf{Group Information} (members and roles)
+  \item \textbf{Build Instructions} (\makedeps, \make, \makerun, \maketest)
+  \item \textbf{Usage Examples}
+  \item \textbf{Project Structure}
+  \item \textbf{Data Structures Used} and why each was chosen
+  \item \textbf{Known Limitations}
+\end{enumerate}
+
+% ── Source Code Only ──
+\subsection{Source Code Only --- No Builds}
+
+\begin{constraintbox}[SUBMIT SOURCE CODE ONLY]
+Do \textbf{NOT} include any compiled files or build artifacts. Use compression: \code{zip -9}
+\end{constraintbox}
+
+Do \textbf{NOT} include:
+
+\begin{multicols}{2}
+\begin{itemize}
+  \item Compiled binaries (\code{*.o}, \code{*.exe}, \code{*.so})
+  \item Build directories (\filepath{build/}, \filepath{bin/})
+  \item IDE files (\filepath{.idea/}, \filepath{.vscode/})
+  \item Version control (\filepath{.git/})
+  \item Temporary files (\code{*.tmp}, \code{*.log})
+  \item Debug symbols (\code{*.pdb})
+  \item External libraries
+  \item Python cache (\filepath{\_\_pycache\_\_/})
+  \item Node modules (\filepath{node\_modules/})
+\end{itemize}
+\end{multicols}
+
+\begin{lstlisting}[style=bash]
+GROUP_ID=Group05
+PROB_NUM=01
+make submit
+\end{lstlisting}
+
+% ── Pre-Submission Checklist ──
+\subsection{Pre-Submission Checklist}
+
+\begin{multicols}{2}
+\begin{itemize}
+  \item[\checkbox] Code compiles without errors
+  \item[\checkbox] No compiler warnings
+  \item[\checkbox] All tests pass
+  \item[\checkbox] No memory leaks
+  \item[\checkbox] Code is formatted
+  \item[\checkbox] Documentation generates
+  \item[\checkbox] README is complete
+  \item[\checkbox] UML diagrams included
+  \item[\checkbox] Presentation slides included
+  \item[\checkbox] Frontend works
+  \item[\checkbox] Data files included
+  \item[\checkbox] No prohibited STL containers
+  \item[\checkbox] Minimum two custom data structures
+  \item[\checkbox] Pointer-based implementation
+\end{itemize}
+\end{multicols}
+
+% ── Fresh Build Test ──
+\subsection{Fresh Build Test}
+
+Extract your zip to a new directory and verify:
+
+\begin{lstlisting}[style=bash]
+unzip Group05_01.zip -d /tmp/test_build
+cd /tmp/test_build/Group05_01
+make deps
+make
+make test
+make run
+\end{lstlisting}
+
+% ── Academic Integrity ──
+\subsection{Academic Integrity}
+
+All work must be your own. You may discuss concepts with classmates, but all code must be original. Cite any external resources you reference. Plagiarism detection tools will be used to compare submissions. Violations will result in an automatic zero and disciplinary action.

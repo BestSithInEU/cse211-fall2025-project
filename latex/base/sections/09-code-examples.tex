@@ -1,0 +1,305 @@
+% sections/09-code-examples.tex — Code Examples
+
+\section{Code Examples}
+
+This section provides examples of expected documentation standards and code organization. These examples use unrelated classes to demonstrate the format only.
+
+% ── Doxygen Documentation Format ──
+\subsection{Doxygen Documentation Format}
+
+\begin{lstlisting}[style=cpp]
+/**
+ * @file Dragon.h
+ * @brief Declaration of the Dragon class.
+ * @author Student Name
+ * @date 2025-12-01
+ */
+
+/**
+ * @brief Represents a mythical dragon creature.
+ *
+ * This class models a dragon with attributes such as fire power,
+ * treasure hoard, and flight capability. It demonstrates proper
+ * documentation format for class declarations.
+ *
+ * @tparam T The type of treasure the dragon hoards.
+ */
+
+/**
+ * @brief Makes the dragon breathe fire at a target.
+ *
+ * @pre The dragon's fire power must be greater than zero.
+ * @post The dragon's fire power is reduced by the attack cost.
+ * @param target The name of the target to attack.
+ * @return int The damage dealt to the target.
+ * @throws std::runtime_error If the dragon has no fire power remaining.
+ */
+\end{lstlisting}
+
+% ── Header File Structure ──
+\subsection{Header File Structure}
+
+\begin{lstlisting}[style=cpp, caption={Example Header: include/creatures/Dragon.h}]
+/**
+ * @file Dragon.h
+ * @brief Declaration of the Dragon class.
+ */
+
+#pragma once
+
+#include <string>
+#include <memory>
+
+namespace creatures {
+
+/**
+ * @brief Represents a fire-breathing dragon.
+ *
+ * A dragon can fly, breathe fire, and hoard treasure.
+ * Each dragon has a unique name and a fire power level.
+ */
+class Dragon {
+public:
+    /**
+     * @brief Constructs a new Dragon with the given name and fire power.
+     *
+     * @pre name must not be empty.
+     * @post A Dragon object is created with the specified attributes.
+     * @param name The unique name of the dragon.
+     * @param firePower The initial fire power level.
+     */
+    explicit Dragon(const std::string& name, int firePower);
+
+    /**
+     * @brief Destroys the Dragon object.
+     *
+     * @post All resources owned by the dragon are released.
+     */
+    ~Dragon();
+
+    // Rule of Five
+    Dragon(const Dragon& other);
+    Dragon& operator=(const Dragon& other);
+    Dragon(Dragon&& other) noexcept;
+    Dragon& operator=(Dragon&& other) noexcept;
+
+    /**
+     * @brief Makes the dragon breathe fire.
+     *
+     * @pre getFirePower() > 0.
+     * @post Fire power is reduced by the attack cost.
+     * @return int The damage dealt.
+     * @throws std::runtime_error If fire power is zero or less.
+     */
+    int breatheFire();
+
+    /**
+     * @brief Adds treasure to the dragon's hoard.
+     *
+     * @pre amount > 0.
+     * @post The dragon's treasure is increased by amount.
+     * @param amount The amount of treasure to add.
+     */
+    void addTreasure(int amount);
+
+    /**
+     * @brief Allows the dragon to rest and recover fire power.
+     *
+     * @post Fire power is restored to its maximum value.
+     */
+    void rest();
+
+    // Getters
+    const std::string& getName() const noexcept;
+    int getFirePower() const noexcept;
+    int getTreasure() const noexcept;
+    bool canFly() const noexcept;
+
+private:
+    struct Impl;                    ///< Forward-declared implementation.
+    std::unique_ptr<Impl> pImpl_;   ///< Pointer to implementation.
+};
+
+} // namespace creatures
+\end{lstlisting}
+
+% ── Source File Structure ──
+\subsection{Source File Structure}
+
+\begin{lstlisting}[style=cpp, caption={Example Source: src/creatures/Dragon.cpp}]
+/**
+ * @file Dragon.cpp
+ * @brief Implementation of the Dragon class.
+ */
+
+#include "creatures/Dragon.h"
+#include <stdexcept>
+
+namespace creatures {
+
+struct Dragon::Impl {
+    std::string name;
+    int firePower;
+    int treasure;
+    bool flying;
+
+    Impl(const std::string& n, int fp)
+        : name(n), firePower(fp), treasure(0), flying(true) {}
+};
+
+Dragon::Dragon(const std::string& name, int firePower) {
+    if (name.empty()) {
+        throw std::invalid_argument("Dragon name cannot be empty");
+    }
+    pImpl_ = std::make_unique<Impl>(name, firePower);
+}
+
+Dragon::~Dragon() = default;
+
+Dragon::Dragon(const Dragon& other)
+    : pImpl_(std::make_unique<Impl>(*other.pImpl_)) {}
+
+Dragon::Dragon(Dragon&& other) noexcept = default;
+
+Dragon& Dragon::operator=(const Dragon& other) {
+    if (this != &other) {
+        pImpl_ = std::make_unique<Impl>(*other.pImpl_);
+    }
+    return *this;
+}
+
+Dragon& Dragon::operator=(Dragon&& other) noexcept = default;
+
+int Dragon::breatheFire() {
+    if (pImpl_->firePower <= 0) {
+        throw std::runtime_error("No fire power remaining");
+    }
+    int damage = pImpl_->firePower * 2;
+    pImpl_->firePower -= 10;
+    return damage;
+}
+
+void Dragon::addTreasure(int amount) {
+    if (amount > 0) {
+        pImpl_->treasure += amount;
+    }
+}
+
+void Dragon::rest() {
+    pImpl_->firePower = 100;
+}
+
+const std::string& Dragon::getName() const noexcept {
+    return pImpl_->name;
+}
+
+int Dragon::getFirePower() const noexcept {
+    return pImpl_->firePower;
+}
+
+int Dragon::getTreasure() const noexcept {
+    return pImpl_->treasure;
+}
+
+bool Dragon::canFly() const noexcept {
+    return pImpl_->flying;
+}
+
+} // namespace creatures
+\end{lstlisting}
+
+% ── Main.cpp Structure ──
+\subsection{Main.cpp Structure}
+
+\begin{lstlisting}[style=cpp, caption={Example: src/main.cpp}]
+/**
+ * @file main.cpp
+ * @brief Main entry point for the application.
+ */
+
+#include <iostream>
+#include <string>
+
+/**
+ * @brief Prints usage information for the application.
+ */
+void printUsage() {
+    std::cout << "Usage: ./app [options] <input_file>\n"
+              << "Options:\n"
+              << "  -h           Show this help message\n"
+              << "  -v           Enable verbose output\n"
+              << "  -o <file>    Specify output file\n";
+}
+
+int main(int argc, char* argv[]) {
+    std::string inputFile = "data/input_default.json";
+    bool verbose = false;
+
+    // Parse command-line arguments
+    for (int i = 1; i < argc; ++i) {
+        std::string arg = argv[i];
+        if (arg == "-h") {
+            printUsage();
+            return 0;
+        } else if (arg == "-v") {
+            verbose = true;
+        } else {
+            inputFile = arg;
+        }
+    }
+
+    try {
+        // 1. Load input data
+        // 2. Initialize data structures
+        // 3. Process data
+        // 4. Output results
+
+        if (verbose) {
+            std::cout << "Processing: " << inputFile << "\n";
+        }
+
+        std::cout << "Application completed successfully.\n";
+    } catch (const std::exception& e) {
+        std::cerr << "Error: " << e.what() << "\n";
+        return 1;
+    }
+
+    return 0;
+}
+\end{lstlisting}
+
+% ── Pre/Post Condition Examples ──
+\subsection{Pre/Post Condition Examples}
+
+\begin{lstlisting}[style=cpp]
+/**
+ * @brief Feeds the dragon with the given food.
+ *
+ * @pre food must not be nullptr.
+ * @pre food->isEdible() must return true.
+ * @pre getHealth() < getMaxHealth().
+ * @post getHealth() is increased by food->getNutrition().
+ * @post getHealth() <= getMaxHealth().
+ * @post food is consumed and ownership is transferred.
+ * @param food Pointer to the food item (ownership transferred).
+ * @throws std::invalid_argument If food is nullptr or not edible.
+ * @throws std::logic_error If the dragon is already at full health.
+ */
+void feed(Food* food);
+
+/**
+ * @brief Removes a scale at the given position.
+ *
+ * @pre getScaleCount() > 0.
+ * @pre position < getScaleCount().
+ * @post getScaleCount() is decremented by one.
+ * @post The removed scale is returned to the caller.
+ * @param position The index of the scale to remove.
+ * @return Scale* Pointer to the removed scale (caller owns memory).
+ * @throws std::out_of_range If position >= getScaleCount().
+ */
+Scale* removeScale(size_t position);
+\end{lstlisting}
+
+\vspace{6pt}
+\textbf{Important:} These examples demonstrate documentation format only. Your actual project must implement custom pointer-based data structures, not creature classes!

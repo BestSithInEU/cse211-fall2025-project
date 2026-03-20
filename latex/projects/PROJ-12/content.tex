@@ -1,0 +1,58 @@
+\section{Problem Statement}
+
+Design and implement an intersection scheduler for autonomous vehicles. Vehicles approaching the intersection submit reservation requests specifying their arrival time, entry lane, and exit lane. The scheduler must assign time slots for each conflict zone the vehicle will traverse, ensuring that no two vehicles occupy the same zone at the same time. The objective is to maximize intersection throughput while guaranteeing zero collisions.
+
+\section{Core Concepts}
+
+\begin{itemize}
+  \item \textbf{Conflict Zone:} A region within the intersection where two or more vehicle paths may cross. A standard 4-way intersection has 16 or more conflict zones.
+  \item \textbf{Time Slot:} A reserved time interval during which a specific vehicle has exclusive access to a conflict zone.
+  \item \textbf{Crossing Path:} The sequence of conflict zones a vehicle must traverse for a given entry-exit pair (e.g., north-entry to west-exit).
+  \item \textbf{Reservation Request:} A tuple of (arrival\_time, entry\_lane, exit\_lane, vehicle\_id) submitted by an approaching vehicle.
+  \item \textbf{FCFS vs Optimization:} First-Come-First-Served is simple but suboptimal. Optimization-based scheduling can batch requests and find better orderings.
+\end{itemize}
+
+\section{Key Challenges}
+
+\begin{itemize}
+  \item \textbf{Conflict Zone Modeling:} Too few zones wastes parallelism opportunities; too many zones increases scheduling complexity.
+  \item \textbf{Efficient Conflict Detection:} Each new reservation must be checked against all existing reservations for overlapping zones and times.
+  \item \textbf{Maximizing Parallelism:} Non-conflicting movements (e.g., two left turns from opposite directions) should proceed simultaneously.
+  \item \textbf{Fairness:} The scheduler must not starve vehicles from low-traffic directions indefinitely.
+  \item \textbf{Variable Crossing Times:} Trucks cross slower than cars. Emergency vehicles require priority and preemption.
+\end{itemize}
+
+\section{Sample Input}
+
+\begin{lstlisting}[style=json]
+{
+  "intersection": {
+    "zones": ["z1", "z2", "z3", "z4", "z5", "z6", "z7", "z8",
+              "z9", "z10", "z11", "z12", "z13", "z14", "z15", "z16"],
+    "paths": {
+      "north_to_south": ["z1", "z5", "z9", "z13"],
+      "north_to_west":  ["z1", "z5", "z6"],
+      "south_to_north": ["z13", "z9", "z5", "z1"],
+      "east_to_west":   ["z4", "z3", "z2", "z1"],
+      "west_to_east":   ["z1", "z2", "z3", "z4"]
+    }
+  },
+  "vehicles": [
+    {"id": "v1", "arrival_time": 0.0, "entry": "north", "exit": "south",
+     "crossing_time": 3.0},
+    {"id": "v2", "arrival_time": 0.5, "entry": "east", "exit": "west",
+     "crossing_time": 3.0},
+    {"id": "v3", "arrival_time": 1.0, "entry": "south", "exit": "north",
+     "crossing_time": 4.5},
+    {"id": "v4", "arrival_time": 1.2, "entry": "west", "exit": "east",
+     "crossing_time": 3.0}
+  ],
+  "simulation": {
+    "duration_seconds": 60
+  }
+}
+\end{lstlisting}
+
+\vfill
+\noindent\rule{\textwidth}{0.4pt}
+{\small\textit{For full project requirements, STL restrictions, submission format, and grading criteria, refer to \textbf{base.pdf} (available on the \href{https://github.com/BestSithInEU/cse211-term-projects/releases}{Releases page}).}}

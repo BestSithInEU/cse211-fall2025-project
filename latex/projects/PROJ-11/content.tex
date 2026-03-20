@@ -1,0 +1,62 @@
+\section{Problem Statement}
+
+Design and implement a microgrid simulator that models renewable energy sources (solar panels, wind turbines), diesel generators, battery storage, and electrical loads. The simulation runs in 15-minute time steps over multiple days. At each step, the system must balance generation with demand by dispatching available sources according to a priority order: renewables first, then battery discharge, then diesel as a last resort. The goal is to minimize diesel usage and battery degradation while meeting all load demands.
+
+\section{Core Concepts}
+
+\begin{itemize}
+  \item \textbf{Generation Profile:} Time-series data for each source. Solar follows a bell curve peaking at noon; wind is stochastic with gusts and lulls.
+  \item \textbf{Load Profile:} Demand curves per load type. Residential loads peak in morning and evening; commercial loads peak during daytime hours.
+  \item \textbf{State of Charge (SoC):} Battery level as a percentage. Operational limits require SoC to stay between 20\% (minimum) and 95\% (maximum) to preserve battery health.
+  \item \textbf{Energy Balance:} At every time step: $\text{Generation} + \text{Battery\_Discharge} = \text{Load} + \text{Battery\_Charge} + \text{Losses}$.
+  \item \textbf{Dispatch Priority:} Renewables are used first (free, zero emissions), then battery discharge, then diesel generators as a last resort.
+\end{itemize}
+
+\section{Key Challenges}
+
+\begin{itemize}
+  \item \textbf{Forecasting:} Predict solar irradiance, wind speed, and load demand for upcoming time steps to make better dispatch decisions.
+  \item \textbf{Storage Arbitrage:} Store energy when renewable generation is abundant and use it when generation is scarce or demand is high.
+  \item \textbf{Battery Degradation:} Penalize deep discharge cycles. Frequent deep cycling reduces battery lifespan and should be avoided.
+  \item \textbf{Diesel Minimization:} Track total diesel consumption and runtime. Diesel should only run when renewables and battery cannot meet demand.
+  \item \textbf{Multi-Day Patterns:} Handle differences between weekday and weekend load profiles, and varying weather patterns across days.
+\end{itemize}
+
+\section{Sample Input}
+
+\begin{lstlisting}[style=json]
+{
+  "sources": [
+    {"id": "solar_1", "type": "solar", "peak_kw": 50},
+    {"id": "wind_1", "type": "wind", "peak_kw": 30},
+    {"id": "diesel_1", "type": "diesel", "peak_kw": 100}
+  ],
+  "storage": [
+    {
+      "id": "battery_1",
+      "capacity_kwh": 200,
+      "soc": 0.80,
+      "charge_rate": 25,
+      "discharge_rate": 25
+    }
+  ],
+  "loads": [
+    {"id": "residential_1", "base_kw": 40},
+    {"id": "commercial_1", "base_kw": 60}
+  ],
+  "time_series": {
+    "solar_profile": [0.0, 0.0, 0.0, 0.0, 0.1, 0.3, 0.6, 0.85, 1.0,
+                      0.85, 0.6, 0.3, 0.1, 0.0, 0.0, 0.0],
+    "load_profile": [0.4, 0.3, 0.3, 0.3, 0.5, 0.7, 0.9, 1.0, 0.95,
+                     0.85, 0.7, 0.6, 0.5, 0.6, 0.8, 1.0]
+  },
+  "simulation": {
+    "time_step_minutes": 15,
+    "duration_hours": 72
+  }
+}
+\end{lstlisting}
+
+\vfill
+\noindent\rule{\textwidth}{0.4pt}
+{\small\textit{For full project requirements, STL restrictions, submission format, and grading criteria, refer to \textbf{base.pdf} (available on the \href{https://github.com/BestSithInEU/cse211-term-projects/releases}{Releases page}).}}

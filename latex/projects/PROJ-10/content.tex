@@ -1,0 +1,56 @@
+\section{Problem Statement}
+
+Design and implement a disaster relief logistics system that routes supply trucks through a damaged road network. The network is modeled as a graph where nodes represent distribution centers, shelters, hospitals, and warehouses, and edges represent roads with damage levels (CLEAR, DAMAGED, or BLOCKED). The system must deliver multiple supply types including water, food, and medicine to affected populations. Allocation must account for population size, urgency, and special needs while adapting to dynamic road conditions as routes are cleared or further damaged.
+
+\section{Core Concepts}
+
+\begin{itemize}
+  \item \textbf{Road Damage Level:} Each road has a status of CLEAR, DAMAGED, or BLOCKED. DAMAGED roads are passable but slower, BLOCKED roads are impassable. Status may change over time.
+  \item \textbf{Supply Priority:} Demand nodes are prioritized based on population size, number of days without supplies, and presence of special needs such as medical facilities.
+  \item \textbf{Unmet Demand:} The gap between what a location needs and what it has received, used to drive allocation decisions and measure system effectiveness.
+  \item \textbf{Network Connectivity:} After damage, some areas may be completely cut off. Identifying connected components determines which locations are reachable from each warehouse.
+  \item \textbf{Truck Capacity:} Each truck can carry a limited amount of supplies per trip and must return to a warehouse to reload.
+\end{itemize}
+
+\section{Key Challenges}
+
+\begin{itemize}
+  \item \textbf{Connectivity Analysis:} Determine connected components in the damaged network to identify which shelters are reachable from which warehouses.
+  \item \textbf{Route Finding:} Compute shortest paths weighted by actual travel time, accounting for damage-induced delays on DAMAGED roads.
+  \item \textbf{Fair Allocation:} Distribute limited supplies proportionally across locations or prioritize the most critical needs such as hospitals and large shelters.
+  \item \textbf{Dynamic Updates:} Adapt routing and allocation as road conditions change, with previously blocked roads being cleared or intact roads becoming impassable.
+  \item \textbf{Multi-Commodity Flow:} Handle different supply types with independent demands, ensuring each location receives the specific resources it needs.
+\end{itemize}
+
+\section{Sample Input}
+
+\begin{lstlisting}[style=json, caption={data/input\_sample.json}]
+{
+  "nodes": [
+    {"id": "WH1", "type": "warehouse", "supplies": {"water": 500, "food": 300, "medicine": 100}},
+    {"id": "WH2", "type": "warehouse", "supplies": {"water": 400, "food": 200, "medicine": 50}},
+    {"id": "S1", "type": "shelter", "population": 200},
+    {"id": "S2", "type": "shelter", "population": 350},
+    {"id": "S3", "type": "shelter", "population": 150},
+    {"id": "H1", "type": "hospital", "population": 80}
+  ],
+  "roads": [
+    {"from": "WH1", "to": "S1", "distance": 10, "status": "CLEAR"},
+    {"from": "WH1", "to": "S2", "distance": 15, "status": "DAMAGED"},
+    {"from": "WH2", "to": "S3", "distance": 8, "status": "CLEAR"},
+    {"from": "WH2", "to": "H1", "distance": 12, "status": "CLEAR"},
+    {"from": "S1", "to": "S2", "distance": 5, "status": "BLOCKED"},
+    {"from": "S2", "to": "H1", "distance": 7, "status": "DAMAGED"},
+    {"from": "S3", "to": "S1", "distance": 20, "status": "CLEAR"}
+  ],
+  "trucks": [
+    {"id": "T1", "capacity": 100, "location": "WH1"},
+    {"id": "T2", "capacity": 80, "location": "WH1"},
+    {"id": "T3", "capacity": 120, "location": "WH2"}
+  ]
+}
+\end{lstlisting}
+
+\vfill
+\noindent\rule{\textwidth}{0.4pt}
+{\small\textit{For full project requirements, STL restrictions, submission format, and grading criteria, refer to \textbf{base.pdf} (available on the \href{https://github.com/BestSithInEU/cse211-term-projects/releases}{Releases page}).}}

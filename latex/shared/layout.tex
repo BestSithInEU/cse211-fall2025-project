@@ -1,0 +1,24 @@
+% shared/layout.tex — Page layout, headers, footers
+
+% ══════════════════════════════════════════════════════════════════════
+% Header / Footer
+% ══════════════════════════════════════════════════════════════════════
+\pagestyle{fancy}
+\fancyhf{}
+
+\fancyhead[L]{\small\textsc{\thecourstitle}}
+\fancyhead[R]{\small\textsc{\thedoctype}}
+\renewcommand{\headrulewidth}{0.4pt}
+
+\fancyfoot[L]{\scriptsize\thedocversion{} --- \thesemestershort{} --- Updated: \thedocdate}
+\fancyfoot[R]{\small Page \thepage\ of \pageref{LastPage}}
+\renewcommand{\footrulewidth}{0.4pt}
+
+% Plain style (for title page, TOC first page)
+\fancypagestyle{plain}{
+  \fancyhf{}
+  \fancyfoot[L]{\scriptsize\thedocversion{} --- \thesemestershort{} --- Updated: \thedocdate}
+  \fancyfoot[R]{\small Page \thepage\ of \pageref{LastPage}}
+  \renewcommand{\headrulewidth}{0pt}
+  \renewcommand{\footrulewidth}{0.4pt}
+}

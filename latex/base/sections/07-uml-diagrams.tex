@@ -1,0 +1,131 @@
+% sections/07-uml-diagrams.tex — UML Diagrams and Design Documentation
+
+\section{UML Diagrams and Design Documentation}
+
+% ── Requirement ──
+\subsection{Requirement}
+
+You must create UML diagrams to document your software design. These diagrams should accurately represent the structure and interactions of your system.
+
+% ── Required Diagrams ──
+\subsection{Required Diagrams}
+
+\subsubsection{Class Diagram}
+
+A class diagram shows the static structure of your system---its classes, attributes, methods, and relationships. Your class diagram must include:
+
+\begin{itemize}
+  \item All major classes in your project
+  \item Public attributes and methods
+  \item \textbf{Inheritance} --- solid line with hollow triangle arrowhead
+  \item \textbf{Composition} --- solid line with filled diamond (strong ownership)
+  \item \textbf{Aggregation} --- solid line with hollow diamond (weak ownership)
+  \item \textbf{Associations} --- plain solid lines
+  \item \textbf{Multiplicity} --- \code{1}, \code{0..1}, \code{*}, \code{1..*}
+\end{itemize}
+
+\subsubsection{Sequence Diagram (Optional but Recommended)}
+
+A sequence diagram shows how objects interact over time. It is especially useful for documenting:
+
+\begin{itemize}
+  \item Main application flow
+  \item Complex operations involving multiple objects
+  \item Request/response patterns
+\end{itemize}
+
+\subsubsection{Component Diagram (Optional)}
+
+A component diagram shows the high-level organization of your modules and their dependencies. Useful for understanding the overall architecture.
+
+% ── UML Tools ──
+\subsection{UML Tools}
+
+\textbf{Free / Open Source:}
+\begin{itemize}
+  \item \href{https://plantuml.com/}{PlantUML} --- text-based, version-control friendly
+  \item \href{https://app.diagrams.net/}{Draw.io} --- web-based, intuitive drag-and-drop
+  \item \href{https://umbrello.kde.org/}{Umbrello} --- KDE UML modeller
+  \item \href{https://staruml.io/}{StarUML} --- multi-platform UML tool
+  \item \href{https://mermaid.js.org/}{Mermaid} --- text-based, renders in Markdown
+\end{itemize}
+
+\textbf{Commercial:}
+\begin{itemize}
+  \item Visual Paradigm
+  \item Enterprise Architect
+  \item Lucidchart
+\end{itemize}
+
+% ── PlantUML Example ──
+\subsection{PlantUML Example}
+
+\begin{lstlisting}[style=plaintext]
+@startuml
+
+class LinkedList<T> {
+    - head : Node<T>*
+    - tail : Node<T>*
+    - size : int
+    + insert(index : int, value : T) : void
+    + remove(index : int) : T
+    + get(index : int) : T
+    + isEmpty() : bool
+    + getSize() : int
+}
+
+class Node<T> {
+    + data : T
+    + next : Node<T>*
+}
+
+LinkedList *-- Node : contains
+
+@enduml
+\end{lstlisting}
+
+% ── Diagram Placement ──
+\subsection{Diagram Placement}
+
+Store all diagrams and design documents in the \filepath{docs/} directory:
+
+\begin{lstlisting}[style=tree]
+docs/
+|-- uml/
+|   |-- class_diagram.png
+|   |-- class_diagram.puml ......... PlantUML source
+|   +-- sequence_main_flow.png
+|-- design_document.md
++-- Doxyfile
+\end{lstlisting}
+
+% ── Design Document ──
+\subsection{Design Document}
+
+Create a \filename{design\_document.md} in your \filepath{docs/} directory. It should include:
+
+\begin{enumerate}
+  \item \textbf{Architecture Overview} --- high-level description of the system
+  \item \textbf{Module Descriptions} --- purpose and responsibility of each module
+  \item \textbf{Data Structure Choices} --- which data structures you chose and why
+  \item \textbf{Algorithm Explanations} --- key algorithms with time/space complexity
+  \item \textbf{Design Decisions} --- trade-offs you considered and your rationale
+\end{enumerate}
+
+% ── UML Notation Quick Reference ──
+\subsection{UML Notation Quick Reference}
+
+\begin{center}
+\begin{tabular}{l l}
+\hline
+\rowcolor{tableheader} \textbf{Relationship} & \textbf{Notation} \\
+\hline
+Inheritance & Solid line with hollow triangle \\
+Interface Implementation & Dashed line with hollow triangle \\
+Composition & Solid line with filled diamond \\
+Aggregation & Solid line with hollow diamond \\
+Association & Plain solid line \\
+Dependency & Dashed line with arrow \\
+\hline
+\end{tabular}
+\end{center}

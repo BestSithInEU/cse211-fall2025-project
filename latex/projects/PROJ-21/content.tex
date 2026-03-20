@@ -1,0 +1,50 @@
+\section{Problem Statement}
+
+Design and implement a simplified version control system that models commits, branches, merging, and history as a directed acyclic graph (DAG). The system must support \texttt{commit}, \texttt{branch}, \texttt{checkout}, \texttt{log}, \texttt{diff}, and \texttt{merge} operations. Each commit is an immutable snapshot of the tracked files, and the DAG structure must correctly handle merge commits with multiple parents.
+
+\section{Core Concepts}
+
+\begin{itemize}
+  \item \textbf{Commit Object:} An immutable record containing a unique ID (hash), parent commit IDs, author, timestamp, message, and a snapshot of all tracked file contents at that point.
+  \item \textbf{Branch Pointer:} A named reference that points to a specific commit ID. When a new commit is made on a branch, the pointer advances to the new commit.
+  \item \textbf{HEAD:} A special pointer indicating the current position in the repository. HEAD is either attached to a branch or detached and pointing directly at a commit.
+  \item \textbf{Directed Acyclic Graph:} Commits form a DAG where edges point from child commits to their parents. This structure captures the full history including parallel branches and merges.
+  \item \textbf{Merge Commit:} A commit with two parent commits, representing the point where two parallel lines of development are combined into one.
+\end{itemize}
+
+\section{Key Challenges}
+
+\begin{itemize}
+  \item \textbf{DAG Representation:} Storing and traversing a graph where each node may have multiple parents, unlike a simple linked list of commits.
+  \item \textbf{Common Ancestor:} Finding the most recent shared ancestor of two branches, which is required to perform a correct merge operation.
+  \item \textbf{Three-Way Merge:} Comparing both branch heads against their common ancestor to determine what changed on each side and detecting conflicts when both sides modify the same file.
+  \item \textbf{History Traversal:} Walking parent pointers to display the commit log, correctly handling merge commits and avoiding duplicate entries when paths reconverge.
+  \item \textbf{Diff Computation:} Comparing file contents between any two commits to show added, deleted, and modified lines.
+\end{itemize}
+
+\section{Sample Input}
+
+\begin{lstlisting}[style=json, caption={data/input\_sample.json}]
+{
+  "initial_files": {
+    "main.py": "def main():\n    print('hello')\n",
+    "utils.py": "def add(a, b):\n    return a + b\n"
+  },
+  "operations": [
+    {"type": "commit", "message": "Initial commit", "author": "alice"},
+    {"type": "branch", "name": "feature"},
+    {"type": "checkout", "target": "feature"},
+    {"type": "edit", "file": "utils.py", "content": "def add(a, b):\n    return a + b\n\ndef sub(a, b):\n    return a - b\n"},
+    {"type": "commit", "message": "Add subtraction utility", "author": "bob"},
+    {"type": "checkout", "target": "main"},
+    {"type": "edit", "file": "main.py", "content": "def main():\n    print('hello world')\n"},
+    {"type": "commit", "message": "Update greeting", "author": "alice"},
+    {"type": "merge", "source": "feature", "message": "Merge feature into main"},
+    {"type": "log", "branch": "main"}
+  ]
+}
+\end{lstlisting}
+
+\vfill
+\noindent\rule{\textwidth}{0.4pt}
+{\small\textit{For full project requirements, STL restrictions, submission format, and grading criteria, refer to \textbf{base.pdf} (available on the \href{https://github.com/BestSithInEU/cse211-term-projects/releases}{Releases page}).}}

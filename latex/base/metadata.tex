@@ -1,0 +1,37 @@
+% base/metadata.tex — Document-specific configuration
+%
+% Change these values to update the document globally.
+% All shared components read from these commands.
+
+\makeatletter
+
+% ── Course info ──
+\newcommand{\thecourscode}{CSE 211}
+\newcommand{\thecoursname}{Data Structures}
+\newcommand{\thecourstitle}{\thecourscode{} - \thecoursname}
+
+% ── Document info ──
+\newcommand{\thedoctype}{Term Project}
+\newcommand{\thedocsubtitle}{(Group Project)}
+
+% ── Semester ──
+\newcommand{\thesemester}{2025-2026 Spring Semester}
+\newcommand{\thesemestershort}{Spring 2026}
+
+% ── University ──
+\newcommand{\theuniversity}{Yeditepe University}
+\newcommand{\thedepartment}{Department of Computer Science \& Engineering}
+\newcommand{\thelogopath}{../assets/yeditepe-logo.png}
+
+% ── Instructor & Coordinator ──
+\newcommand{\theinstructorname}{Prof.\ Dr.\ Mert \"{O}zkaya}
+\newcommand{\thecoordinatorname}{Batuhan Edg\"{u}er}
+
+% ── Footer note ──
+\newcommand{\thefooternote}{This document contains the project specifications, requirements, and expectations.}
+
+% ── Version (overridden at build time via Makefile; these are fallbacks) ──
+\providecommand{\thedocversion}{dev}
+\providecommand{\thedocdate}{\today}
+
+\makeatother

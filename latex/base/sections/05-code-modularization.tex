@@ -1,0 +1,346 @@
+% sections/05-code-modularization.tex — Code Modularization
+
+\section{Code Modularization}
+
+% ── Requirement ──
+\subsection{Requirement}
+
+Your code must be properly modularized. The following are \textbf{NOT} acceptable:
+
+\begin{itemize}
+  \item A single file with thousands of lines of code
+  \item All code placed in \filename{main.cpp}
+  \item Duplicated code across files
+  \item Tightly coupled components that cannot be tested independently
+\end{itemize}
+
+% ── Project Structure ──
+\subsection{Project Structure}
+
+Your project should follow this directory structure:
+
+\begin{lstlisting}[style=tree]
+project/
+|-- include/                    Header files (.h/.hpp)
+|   |-- data_structures/
+|   |-- core/
+|   +-- utils/
+|-- src/                        Source files (.cpp)
+|   |-- data_structures/
+|   |-- core/
+|   |-- utils/
+|   +-- main.cpp
+|-- tests/                      Test files
+|   |-- unit/
+|   |-- integration/
+|   |-- edge_cases/
+|   |-- performance/
+|   +-- fixtures/
+|-- data/                       Input/test data
+|   |-- input_*.json
+|   |-- edge_case_*.xml
+|   |-- test_*.yaml
+|   |-- expected_*.json
+|   +-- benchmark_*.bin
+|-- scripts/
+|   |-- generate_test_data.py
+|   +-- generate_binary.cpp
+|-- docs/
+|   |-- uml/
+|   +-- Doxyfile
+|-- frontend/                   Frontend implementation
+|-- libs/                       External header-only libraries
+|-- Makefile                    (or CMakeLists.txt)
+|-- CMakeLists.txt              (optional, alternative to Makefile)
+|-- project.code-workspace      VSCode workspace (optional)
+|-- .clang-format
++-- README.md
+\end{lstlisting}
+
+% ── Modularization Guidelines ──
+\subsection{Modularization Guidelines}
+
+\subsubsection{Single Responsibility Principle}
+
+Each file and class should have a single, well-defined purpose. For example:
+
+\begin{itemize}
+  \item \filename{LinkedList.h} / \filename{LinkedList.cpp} --- linked list data structure
+  \item \filename{FileParser.h} / \filename{FileParser.cpp} --- file parsing logic
+  \item \filename{Validator.h} / \filename{Validator.cpp} --- input validation
+\end{itemize}
+
+\subsubsection{Utility Functions}
+
+Group reusable helper functions into utility modules:
+
+\begin{lstlisting}[style=cpp]
+// utils/StringUtils.h
+#pragma once
+#include <string>
+#include <vector>
+
+namespace utils {
+
+std::string trim(const std::string& str);
+std::string toLower(const std::string& str);
+std::vector<std::string> split(const std::string& str, char delimiter);
+bool startsWith(const std::string& str, const std::string& prefix);
+
+} // namespace utils
+\end{lstlisting}
+
+\textit{\textbf{Note:} Utility functions may return STL types (e.g., \texttt{std::vector}) for transient use. This does not violate the STL restriction, which applies to your \textbf{primary data structures} --- the ones central to your solution.}
+
+\subsubsection{Common Patterns}
+
+Provide a centralized logging utility:
+
+\begin{lstlisting}[style=cpp]
+// utils/Logger.h
+#pragma once
+#include <string>
+
+enum class LogLevel { DEBUG, INFO, WARNING, ERROR };
+
+void log(LogLevel level, const std::string& message);
+void setLogLevel(LogLevel level);
+\end{lstlisting}
+
+\subsubsection{Configuration}
+
+Centralize application configuration:
+
+\begin{lstlisting}[style=cpp]
+// core/Config.h
+#pragma once
+#include <string>
+
+struct Config {
+    std::string dataDirectory;
+    int maxIterations;
+    bool verboseMode;
+
+    static Config loadFromFile(const std::string& path);
+};
+\end{lstlisting}
+
+% ── File Size Guidelines ──
+\subsection{File Size Guidelines}
+
+\begin{center}
+\begin{tabular}{l l}
+\hline
+\rowcolor{tableheader} \textbf{File Type} & \textbf{Recommended Max Lines} \\
+\hline
+Header files (\filename{.h}) & 200--300 lines \\
+Source files (\filename{.cpp}) & 300--500 lines \\
+\filename{main.cpp} & 50--100 lines \\
+Test files & 200--400 lines \\
+\hline
+\end{tabular}
+\end{center}
+
+If a file exceeds these limits, consider splitting it into smaller, focused modules.
+
+% ── SOLID Design Principles ──
+\subsection{SOLID Design Principles (Recommended)}
+
+\textit{The following principles are recommended for better code quality but not strictly required. Focus on basic modularization first.}
+
+\subsubsection{Single Responsibility Principle (SRP)}
+
+Each class or module should have only one reason to change. A class that handles both file parsing and data validation is doing too much---split it.
+
+\subsubsection{Open/Closed Principle (OCP)}
+
+Software entities should be open for extension but closed for modification. Use inheritance and polymorphism to add new behavior without changing existing code.
+
+\subsubsection{Liskov Substitution Principle (LSP)}
+
+Derived classes must be substitutable for their base classes without altering program correctness.
+
+\begin{lstlisting}[style=cpp]
+class Shape {
+public:
+    virtual ~Shape() = default;
+    virtual double area() const = 0;
+    virtual double perimeter() const = 0;
+    virtual void draw() const = 0;
+};
+
+class Circle : public Shape {
+    double radius;
+public:
+    explicit Circle(double r) : radius(r) {}
+    double area() const override;
+    double perimeter() const override;
+    void draw() const override;
+};
+
+class Rectangle : public Shape {
+    double width, height;
+public:
+    Rectangle(double w, double h) : width(w), height(h) {}
+    double area() const override;
+    double perimeter() const override;
+    void draw() const override;
+};
+
+class Triangle : public Shape {
+    double a, b, c;
+public:
+    Triangle(double a, double b, double c) : a(a), b(b), c(c) {}
+    double area() const override;
+    double perimeter() const override;
+    void draw() const override;
+};
+
+// Works with ANY Shape --- LSP in action
+void printShapeInfo(const Shape& shape) {
+    std::cout << "Area: " << shape.area() << "\n";
+    std::cout << "Perimeter: " << shape.perimeter() << "\n";
+    shape.draw();
+}
+\end{lstlisting}
+
+\subsubsection{Interface Segregation Principle (ISP)}
+
+Prefer small, focused interfaces over large monolithic ones. Clients should not be forced to depend on methods they do not use.
+
+\subsubsection{Dependency Inversion Principle (DIP)}
+
+High-level modules should not depend on low-level modules. Both should depend on abstractions. Abstractions should not depend on details---details should depend on abstractions.
+
+% ── Design Patterns (Optional) ──
+\subsection{Design Patterns (Optional --- for bonus points)}
+
+\textit{Design patterns can improve code architecture. Only use them if they genuinely fit your problem.}
+
+\subsubsection{Factory Pattern}
+
+\begin{lstlisting}[style=cpp]
+class VehicleFactory {
+public:
+    enum class Type { CAR, MOTORCYCLE, TRUCK, BICYCLE };
+
+    static std::unique_ptr<Vehicle> create(Type type) {
+        switch (type) {
+            case Type::CAR:        return std::make_unique<Car>();
+            case Type::MOTORCYCLE: return std::make_unique<Motorcycle>();
+            case Type::TRUCK:      return std::make_unique<Truck>();
+            case Type::BICYCLE:    return std::make_unique<Bicycle>();
+            default:               return nullptr;
+        }
+    }
+
+    static std::unique_ptr<Vehicle> create(const std::string& type) {
+        if (type == "car")        return create(Type::CAR);
+        if (type == "motorcycle") return create(Type::MOTORCYCLE);
+        if (type == "truck")      return create(Type::TRUCK);
+        if (type == "bicycle")    return create(Type::BICYCLE);
+        return nullptr;
+    }
+};
+\end{lstlisting}
+
+\subsubsection{Strategy Pattern}
+
+\begin{lstlisting}[style=cpp]
+class IPaymentStrategy {
+public:
+    virtual ~IPaymentStrategy() = default;
+    virtual void pay(double amount) = 0;
+    virtual std::string getName() const = 0;
+};
+
+class CreditCardPayment : public IPaymentStrategy {
+public:
+    void pay(double amount) override;
+    std::string getName() const override { return "Credit Card"; }
+};
+
+class PayPalPayment : public IPaymentStrategy {
+public:
+    void pay(double amount) override;
+    std::string getName() const override { return "PayPal"; }
+};
+
+class CryptoPayment : public IPaymentStrategy {
+public:
+    void pay(double amount) override;
+    std::string getName() const override { return "Crypto"; }
+};
+
+class ShoppingCart {
+    std::unique_ptr<IPaymentStrategy> paymentStrategy;
+public:
+    void setPaymentStrategy(std::unique_ptr<IPaymentStrategy> strategy) {
+        paymentStrategy = std::move(strategy);
+    }
+    void checkout(double total) {
+        paymentStrategy->pay(total);
+    }
+};
+\end{lstlisting}
+
+\subsubsection{Observer Pattern}
+
+\begin{lstlisting}[style=cpp]
+class IObserver {
+public:
+    virtual ~IObserver() = default;
+    virtual void onEvent(const std::string& event) = 0;
+};
+
+class EventManager {
+    LinkedList<IObserver*> observers;  // Your custom linked list
+public:
+    void subscribe(IObserver* observer) {
+        observers.add(observer);
+    }
+    void unsubscribe(IObserver* observer) {
+        observers.remove(observer);
+    }
+    void notify(const std::string& event) {
+        // Iterate over observers and call onEvent
+        for (auto it = observers.begin(); it != observers.end(); ++it) {
+            (*it)->onEvent(event);
+        }
+    }
+};
+\end{lstlisting}
+
+% ── Module Organization by Feature ──
+\subsection{Module Organization by Feature}
+
+For larger projects, organize source code by feature or domain rather than by file type:
+
+\begin{lstlisting}[style=tree]
+src/
+|-- inventory/
+|   |-- Inventory.h
+|   |-- Inventory.cpp
+|   |-- Item.h
+|   +-- ItemFactory.h
+|-- entities/
+|   |-- Entity.h
+|   |-- Player.h
+|   +-- Enemy.h
++-- combat/
+    |-- CombatManager.h
+    +-- strategies/
+        |-- IAttackStrategy.h
+        |-- MeleeAttack.h
+        +-- RangedAttack.h
+\end{lstlisting}
+
+% ── Dependency Management ──
+\subsection{Dependency Management}
+
+\begin{itemize}
+  \item \textbf{Minimize dependencies} between modules. Each module should depend on as few others as possible.
+  \item \textbf{Use forward declarations} where possible to reduce include chains.
+  \item \textbf{Avoid circular dependencies.} If \filename{A.h} includes \filename{B.h} and \filename{B.h} includes \filename{A.h}, restructure your code.
+  \item \textbf{Document dependencies} in header comments so other developers can understand the dependency graph.
+\end{itemize}

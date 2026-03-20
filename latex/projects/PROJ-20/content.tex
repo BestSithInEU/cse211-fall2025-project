@@ -1,0 +1,53 @@
+\section{Problem Statement}
+
+Design and implement an HTML parser that builds a Document Object Model (DOM) tree from raw HTML input and supports CSS selector queries over the resulting tree. The parser must handle nested tags, element attributes, self-closing tags, and common malformations gracefully. The query engine must support CSS selectors including tag name, \texttt{.class}, \texttt{\#id}, descendant selectors, child selectors (\texttt{>}), and combinations thereof.
+
+\section{Core Concepts}
+
+\begin{itemize}
+  \item \textbf{DOM Tree:} A hierarchical tree representation of an HTML document where each tag becomes a node, preserving the nesting structure of the original markup.
+  \item \textbf{Element Node:} A tree node representing an HTML tag, storing the tag name, an attributes map (key-value pairs), a list of child nodes, and a pointer to its parent.
+  \item \textbf{Text Node:} A leaf node containing the text content between tags. Text nodes have a parent pointer but no children.
+  \item \textbf{CSS Selector:} A pattern used to match elements in the DOM tree. Selectors can target elements by tag name, class, ID, or structural relationships such as descendant or direct child.
+  \item \textbf{Error Recovery:} Gracefully handling invalid or malformed HTML --- unclosed tags, mismatched nesting, missing attributes --- by applying reasonable recovery strategies rather than failing.
+\end{itemize}
+
+\section{Key Challenges}
+
+\begin{itemize}
+  \item \textbf{Tokenization:} Breaking raw HTML into tokens: start tags, end tags, text content, comments, and attributes with their values.
+  \item \textbf{Tree Construction:} Using a stack-based algorithm where start tags are pushed onto the stack and end tags pop the stack, building parent-child relationships.
+  \item \textbf{Attribute Parsing:} Handling the variety of attribute formats: name-only boolean attributes, unquoted values, and values enclosed in single or double quotes.
+  \item \textbf{Selector Parsing:} Parsing CSS selector strings into structured components that can be matched against DOM nodes during traversal.
+  \item \textbf{Efficient Querying:} Maintaining secondary indexes (by ID and class name) to accelerate selector matching instead of performing full tree traversals for every query.
+\end{itemize}
+
+\section{Sample Input}
+
+\begin{lstlisting}[language=HTML, caption={data/input\_sample.html}]
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Sample Page</title>
+</head>
+<body>
+  <div id="main" class="container">
+    <h1>Welcome</h1>
+    <p class="intro">This is an introduction paragraph.</p>
+    <div class="content">
+      <p>First content paragraph.</p>
+      <p>Second content paragraph.</p>
+    </div>
+  </div>
+  <footer>
+    <a href="https://example.com">Example Link</a>
+  </footer>
+</body>
+</html>
+\end{lstlisting}
+
+Sample queries to test: \texttt{\#main}, \texttt{.content p}, \texttt{div > p}, \texttt{body div.container}
+
+\vfill
+\noindent\rule{\textwidth}{0.4pt}
+{\small\textit{For full project requirements, STL restrictions, submission format, and grading criteria, refer to \textbf{base.pdf} (available on the \href{https://github.com/BestSithInEU/cse211-term-projects/releases}{Releases page}).}}

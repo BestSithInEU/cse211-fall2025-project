@@ -1,0 +1,48 @@
+\section{Problem Statement}
+
+Design and implement a memory allocator that simulates a heap with explicit free list management and boundary tag coalescing. The allocator must support \texttt{malloc(size)} and \texttt{free(ptr)} operations and implement first-fit, best-fit, and next-fit allocation strategies. The system must track fragmentation metrics and correctly handle splitting of large free blocks and coalescing of adjacent free blocks upon deallocation.
+
+\section{Core Concepts}
+
+\begin{itemize}
+  \item \textbf{Block Header:} Metadata stored at the beginning of each block, recording the block size and whether the block is currently allocated or free.
+  \item \textbf{Block Footer:} A copy of the header placed at the end of the block. The footer enables backward traversal, allowing the allocator to inspect the preceding block during coalescing.
+  \item \textbf{Free List:} A linked list threaded through the free blocks in the heap. Each free block contains pointers to the next and previous free blocks, enabling efficient traversal without scanning the entire heap.
+  \item \textbf{Splitting:} When a free block is larger than the requested allocation, it is divided into an allocated block of the requested size and a smaller remaining free block.
+  \item \textbf{Coalescing:} When a block is freed, the allocator checks the adjacent blocks. If a neighbor is also free, the two blocks are merged into a single larger free block to reduce fragmentation.
+\end{itemize}
+
+\section{Key Challenges}
+
+\begin{itemize}
+  \item \textbf{Pointer Arithmetic:} Navigating between headers, payloads, and footers requires precise offset calculations. Off-by-one errors in pointer arithmetic lead to heap corruption.
+  \item \textbf{Boundary Tags:} Using footers to enable backward coalescing introduces the invariant that every block must maintain a consistent header-footer pair, even after splitting.
+  \item \textbf{Free List Maintenance:} Updating the doubly-linked free list pointers when blocks are split, coalesced, allocated, or freed, ensuring no dangling or circular references.
+  \item \textbf{Minimum Block Size:} Free blocks must be large enough to store the list pointers in addition to the header and footer, imposing a minimum allocation granularity.
+  \item \textbf{Fragmentation Measurement:} Computing external fragmentation as the ratio of unusable scattered free memory to total free memory, and reporting it after each operation.
+\end{itemize}
+
+\section{Sample Input}
+
+\begin{lstlisting}[style=json, caption={data/input\_sample.json}]
+{
+  "heap_size": 1024,
+  "allocation_strategy": "first_fit",
+  "operations": [
+    {"type": "malloc", "id": "A", "size": 128},
+    {"type": "malloc", "id": "B", "size": 256},
+    {"type": "malloc", "id": "C", "size": 64},
+    {"type": "free", "id": "A"},
+    {"type": "free", "id": "C"},
+    {"type": "malloc", "id": "D", "size": 100},
+    {"type": "heap_dump"},
+    {"type": "free", "id": "B"},
+    {"type": "heap_dump"},
+    {"type": "malloc", "id": "E", "size": 400}
+  ]
+}
+\end{lstlisting}
+
+\vfill
+\noindent\rule{\textwidth}{0.4pt}
+{\small\textit{For full project requirements, STL restrictions, submission format, and grading criteria, refer to \textbf{base.pdf} (available on the \href{https://github.com/BestSithInEU/cse211-term-projects/releases}{Releases page}).}}

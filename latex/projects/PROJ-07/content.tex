@@ -1,0 +1,57 @@
+\section{Problem Statement}
+
+Design and implement a roadwork planning system that evaluates the impact of road closures and generates optimal detour routes for a city. The city is modeled as a weighted graph where intersections are nodes and road segments are edges with travel times and traffic volumes. The system must support scenario comparison to evaluate different combinations of simultaneous closures, identify critical roads whose removal would severely degrade network performance or disconnect the graph, and produce optimal maintenance schedules.
+
+\section{Core Concepts}
+
+\begin{itemize}
+  \item \textbf{Road Closure:} Modeling a closure by removing an edge from the graph or setting its weight to infinity, making it unavailable for routing.
+  \item \textbf{Detour Route:} An alternative path between the same endpoints that avoids the closed road segment, typically resulting in longer travel time.
+  \item \textbf{Traffic Impact:} The total additional travel time caused by a closure, computed as the increase in travel time multiplied by the traffic volume on the affected route.
+  \item \textbf{Critical Road:} A road segment whose closure dramatically increases average travel time across the network or disconnects parts of the graph entirely.
+  \item \textbf{Closure Schedule:} A plan specifying which roads are closed on which days, coordinating multiple maintenance projects to minimize cumulative disruption.
+\end{itemize}
+
+\section{Key Challenges}
+
+\begin{itemize}
+  \item \textbf{Efficient Recomputation:} Perform incremental shortest-path updates when edges are removed rather than recomputing all paths from scratch.
+  \item \textbf{Traffic Redistribution:} Model how traffic load spreads across alternative routes when a road is closed, potentially overloading other segments.
+  \item \textbf{Scenario Comparison:} Evaluate many combinations of simultaneous closures to find schedules that minimize overall disruption.
+  \item \textbf{Bridge Detection:} Identify edges whose removal disconnects the graph, as these roads cannot be closed without providing temporary alternatives.
+  \item \textbf{Multi-Objective Optimization:} Balance competing objectives including total delay, maximum single-driver delay, project completion time, and maintenance cost.
+\end{itemize}
+
+\section{Sample Input}
+
+\begin{lstlisting}[style=json, caption={data/input\_sample.json}]
+{
+  "intersections": [
+    {"id": "A", "x": 0, "y": 0},
+    {"id": "B", "x": 3, "y": 0},
+    {"id": "C", "x": 6, "y": 0},
+    {"id": "D", "x": 1, "y": 4},
+    {"id": "E", "x": 4, "y": 4},
+    {"id": "F", "x": 7, "y": 4}
+  ],
+  "roads": [
+    {"from": "A", "to": "B", "travel_time": 5, "traffic_volume": 1200},
+    {"from": "B", "to": "C", "travel_time": 4, "traffic_volume": 900},
+    {"from": "A", "to": "D", "travel_time": 7, "traffic_volume": 600},
+    {"from": "B", "to": "E", "travel_time": 6, "traffic_volume": 1500},
+    {"from": "C", "to": "F", "travel_time": 5, "traffic_volume": 800},
+    {"from": "D", "to": "E", "travel_time": 3, "traffic_volume": 700},
+    {"from": "E", "to": "F", "travel_time": 4, "traffic_volume": 1100}
+  ],
+  "roadwork_needed": ["A-B", "B-E", "D-E"],
+  "maintenance_days_required": {
+    "A-B": 3,
+    "B-E": 5,
+    "D-E": 2
+  }
+}
+\end{lstlisting}
+
+\vfill
+\noindent\rule{\textwidth}{0.4pt}
+{\small\textit{For full project requirements, STL restrictions, submission format, and grading criteria, refer to \textbf{base.pdf} (available on the \href{https://github.com/BestSithInEU/cse211-term-projects/releases}{Releases page}).}}

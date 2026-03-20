@@ -1,0 +1,54 @@
+\section{Problem Statement}
+
+Design and implement a university exam timetabling and room allocation system using a graph coloring approach. The system models exams as nodes in a conflict graph, where two exams are connected by an edge if they share at least one enrolled student. Assigning time slots corresponds to graph coloring --- no two adjacent exams may receive the same color. Beyond hard constraints (no student sits two exams simultaneously), the scheduler must respect room capacity limits and optimize soft constraints: spreading exams to maximize the minimum gap between a student's exams, avoiding back-to-back sessions, and preferring morning slots for large-enrollment exams.
+
+\section{Core Concepts}
+
+\begin{itemize}
+  \item \textbf{Conflict Graph:} Each exam is a node. An edge connects two exams if at least one student is enrolled in both, making them impossible to schedule at the same time.
+  \item \textbf{Graph Coloring:} Each color represents a time slot. A valid coloring assigns colors such that no two adjacent nodes share the same color, guaranteeing conflict-free scheduling.
+  \item \textbf{Room Capacity Constraint:} An exam with $N$ enrolled students must be assigned to a room with capacity $\geq N$. Multiple rooms may be combined for large exams.
+  \item \textbf{Soft Constraint Penalty:} Numerical penalties are assigned for violations of preferences (e.g., back-to-back exams, evening slots for large exams). The objective is to minimize total penalty.
+  \item \textbf{Exam Spread:} Maximize the minimum gap between any student's consecutive exams to reduce fatigue and improve preparation time.
+\end{itemize}
+
+\section{Key Challenges}
+
+\begin{itemize}
+  \item \textbf{Conflict Graph Construction:} Efficiently building the conflict graph from enrollment data involving thousands of students across hundreds of courses.
+  \item \textbf{Coloring Heuristics:} Graph coloring is NP-hard in general. Implement heuristics such as largest-degree-first, DSatur (degree of saturation), and randomized greedy approaches.
+  \item \textbf{Room Assignment:} Once time slots are fixed, assigning rooms is a bin-packing problem --- fit exams into available rooms of varying capacities.
+  \item \textbf{Infeasibility Detection:} Detect and report when no valid timetable exists given the available time slots and rooms, providing actionable diagnostics.
+  \item \textbf{Quality Optimization:} Improve schedule quality by swapping time slots to reduce soft constraint penalties without violating hard constraints.
+\end{itemize}
+
+\section{Sample Input}
+
+\begin{lstlisting}[style=json, caption={data/input\_sample.json}]
+{
+  "courses": [
+    {"id": "CSE101", "name": "Intro to CS", "enrolled": ["S001", "S002", "S003", "S010"]},
+    {"id": "CSE201", "name": "Data Structures", "enrolled": ["S001", "S004", "S005"]},
+    {"id": "MATH101", "name": "Calculus I", "enrolled": ["S002", "S004", "S006", "S007"]},
+    {"id": "PHYS101", "name": "Physics I", "enrolled": ["S003", "S006", "S008"]},
+    {"id": "CSE301", "name": "Algorithms", "enrolled": ["S005", "S009", "S010"]}
+  ],
+  "time_slots": [
+    {"id": "TS1", "day": "Monday", "period": "09:00-12:00"},
+    {"id": "TS2", "day": "Monday", "period": "14:00-17:00"},
+    {"id": "TS3", "day": "Tuesday", "period": "09:00-12:00"},
+    {"id": "TS4", "day": "Tuesday", "period": "14:00-17:00"},
+    {"id": "TS5", "day": "Wednesday", "period": "09:00-12:00"}
+  ],
+  "rooms": [
+    {"id": "R1", "capacity": 50},
+    {"id": "R2", "capacity": 120},
+    {"id": "R3", "capacity": 30},
+    {"id": "R4", "capacity": 80}
+  ]
+}
+\end{lstlisting}
+
+\vfill
+\noindent\rule{\textwidth}{0.4pt}
+{\small\textit{For full project requirements, STL restrictions, submission format, and grading criteria, refer to \textbf{base.pdf} (available on the \href{https://github.com/BestSithInEU/cse211-term-projects/releases}{Releases page}).}}

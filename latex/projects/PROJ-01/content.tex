@@ -1,0 +1,59 @@
+\section{Problem Statement}
+
+Design and implement a multi-drone delivery route planner over a city graph with battery and charging station constraints. The city is modeled as a weighted graph where nodes represent delivery locations, warehouses, and charging stations, and edges represent flight paths with associated energy costs. Your system must plan routes for a fleet of drones to complete all deliveries while managing battery levels and charging schedules. The planner should handle dynamic scenarios such as new delivery orders and drone failures.
+
+\section{Core Concepts}
+
+\begin{itemize}
+  \item \textbf{Battery State:} Each drone maintains a current charge level, a consumption rate per unit distance, and a maximum battery capacity. Routes must ensure charge never drops below zero.
+  \item \textbf{Charging Station:} Special nodes in the graph where drones can recharge. Charging time is proportional to the amount of charge needed.
+  \item \textbf{Delivery Window:} Each delivery may have time constraints specifying the earliest and latest acceptable delivery times.
+  \item \textbf{Fleet Coordination:} Multiple drones operate simultaneously and may compete for shared resources such as charging stations.
+  \item \textbf{Energy Cost Model:} The energy required to traverse an edge varies based on payload weight, wind conditions, and elevation changes.
+\end{itemize}
+
+\section{Key Challenges}
+
+\begin{itemize}
+  \item \textbf{Feasibility Checking:} Verify that a drone can complete a proposed route without running out of battery, accounting for detours to charging stations.
+  \item \textbf{Strategic Charging:} Decide when and where to charge to minimize total delivery time while avoiding battery depletion.
+  \item \textbf{Route Construction:} Solve a TSP variant with battery constraints, constructing efficient routes that visit all assigned delivery points.
+  \item \textbf{Dynamic Replanning:} Adapt routes in response to new delivery orders, drone failures, or changing conditions.
+  \item \textbf{Conflict Resolution:} Handle scenarios where multiple drones need the same charging station simultaneously.
+\end{itemize}
+
+\section{Sample Input}
+
+\begin{lstlisting}[style=json, caption={data/input\_sample.json}]
+{
+  "drones": [
+    {"id": "D1", "battery_capacity": 100, "current_battery": 100, "position": "W1"},
+    {"id": "D2", "battery_capacity": 80, "current_battery": 80, "position": "W1"}
+  ],
+  "locations": [
+    {"id": "W1", "type": "warehouse", "x": 0, "y": 0},
+    {"id": "C1", "type": "charging_station", "x": 5, "y": 3},
+    {"id": "L1", "type": "delivery", "x": 10, "y": 7},
+    {"id": "L2", "type": "delivery", "x": 3, "y": 12},
+    {"id": "L3", "type": "delivery", "x": 8, "y": 1}
+  ],
+  "deliveries": [
+    {"id": "DEL1", "destination": "L1", "weight": 2.5},
+    {"id": "DEL2", "destination": "L2", "weight": 1.0},
+    {"id": "DEL3", "destination": "L3", "weight": 3.0}
+  ],
+  "edges": [
+    {"from": "W1", "to": "C1", "energy_cost": 15},
+    {"from": "W1", "to": "L3", "energy_cost": 20},
+    {"from": "C1", "to": "L1", "energy_cost": 18},
+    {"from": "C1", "to": "L2", "energy_cost": 22},
+    {"from": "L1", "to": "L3", "energy_cost": 12},
+    {"from": "L2", "to": "W1", "energy_cost": 25},
+    {"from": "L3", "to": "C1", "energy_cost": 10}
+  ]
+}
+\end{lstlisting}
+
+\vfill
+\noindent\rule{\textwidth}{0.4pt}
+{\small\textit{For full project requirements, STL restrictions, submission format, and grading criteria, refer to \textbf{base.pdf} (available on the \href{https://github.com/BestSithInEU/cse211-term-projects/releases}{Releases page}).}}

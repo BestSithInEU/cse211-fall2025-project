@@ -1,0 +1,54 @@
+\section{Problem Statement}
+
+Design and implement a text editor buffer using the piece table data structure with a branching undo/redo history tree. The piece table represents the document as a sequence of pieces, each pointing into either the original (immutable) buffer or an append-only add buffer. The edit history is modeled as a tree rather than a linear stack: performing a new edit after an undo creates a new branch, preserving all prior states.
+
+\section{Core Concepts}
+
+\begin{itemize}
+  \item \textbf{Piece Table:} A list of descriptor tuples, each containing a buffer reference (original or add), a start offset, and a length. The logical document is the concatenation of all pieces in order.
+  \item \textbf{Original Buffer:} The file content as initially loaded. This buffer is never modified after creation.
+  \item \textbf{Add Buffer:} An append-only buffer that stores all text inserted during the editing session. New text is appended to the end; existing content is never overwritten.
+  \item \textbf{History Tree:} A tree of document states rooted at the initial state. Each edit creates a child node. Undo moves to the parent node, and performing a new edit after undo creates a sibling branch rather than discarding future states.
+  \item \textbf{Piece Operations:} Inserting text splits an existing piece at the insertion point and places a new piece between the halves. Deleting text removes or trims pieces that fall within the deletion range.
+\end{itemize}
+
+\section{Key Challenges}
+
+\begin{itemize}
+  \item \textbf{Logical to Physical Mapping:} Given a character position in the document, determining which piece contains that position and computing the offset within the piece's buffer.
+  \item \textbf{Insert Implementation:} Splitting an existing piece into two parts and inserting a new piece referencing the add buffer between them, updating the piece list correctly.
+  \item \textbf{Delete Implementation:} Handling deletion ranges that span multiple pieces, requiring trimming the first and last affected pieces and removing intermediate ones entirely.
+  \item \textbf{Efficient Text Retrieval:} Reconstructing the document text by concatenating piece contents without copying the entire buffer on every query.
+  \item \textbf{History Navigation:} Tracking the current position in the history tree so that undo moves to the parent and redo navigates to the correct child, while new edits after undo create a new branch and restore the piece table to the correct state.
+\end{itemize}
+
+\section{Sample Input}
+
+\begin{lstlisting}[style=json, caption={data/input\_sample.json}]
+{
+  "initial_document": "Hello, world!",
+  "operations": [
+    {"type": "insert", "position": 7, "text": "beautiful "},
+    {"type": "get_text"},
+    {"type": "delete", "position": 0, "length": 5},
+    {"type": "insert", "position": 0, "text": "Greetings"},
+    {"type": "get_text"},
+    {"type": "undo"},
+    {"type": "undo"},
+    {"type": "get_text"},
+    {"type": "insert", "position": 7, "text": "amazing "},
+    {"type": "get_text"},
+    {"type": "history_tree"}
+  ],
+  "expected_states": [
+    "Hello, beautiful world!",
+    "Greetings, beautiful world!",
+    "Hello, beautiful world!",
+    "Hello, amazing beautiful world!"
+  ]
+}
+\end{lstlisting}
+
+\vfill
+\noindent\rule{\textwidth}{0.4pt}
+{\small\textit{For full project requirements, STL restrictions, submission format, and grading criteria, refer to \textbf{base.pdf} (available on the \href{https://github.com/BestSithInEU/cse211-term-projects/releases}{Releases page}).}}

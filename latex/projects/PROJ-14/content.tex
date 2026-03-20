@@ -1,0 +1,64 @@
+\section{Problem Statement}
+
+Design and implement a path planner for a warehouse picking robot. The warehouse is represented as a 2D grid with aisles, shelves, a home position, and a packing station. Given a picking list of items and their locations, the robot must find an efficient route that visits all locations and returns to the packing station. This is a TSP variant where distances are computed via A* pathfinding on the grid rather than Euclidean distance.
+
+\section{Core Concepts}
+
+\begin{itemize}
+  \item \textbf{Picking List:} A set of (item\_id, location) pairs representing 10--50 items the robot must collect in a single trip.
+  \item \textbf{TSP Tour:} An ordering of the picking locations that minimizes total travel distance. Finding the optimal tour is NP-hard.
+  \item \textbf{Nearest Neighbor Heuristic:} A greedy $O(N^2)$ algorithm that always visits the closest unvisited location next. Fast but typically produces tours 20--25\% longer than optimal.
+  \item \textbf{2-Opt Improvement:} An iterative local search that reverses segments of the tour to eliminate crossing paths and reduce total distance.
+  \item \textbf{Path vs Tour Distance:} Actual travel distance must account for obstacles (shelves, walls) using grid-based pathfinding, not straight-line Euclidean distance.
+\end{itemize}
+
+\section{Key Challenges}
+
+\begin{itemize}
+  \item \textbf{Distance Matrix Computation:} Computing the pairwise distance between $N$ locations requires $N^2$ pathfinding calls.
+  \item \textbf{Obstacle-Aware Pathfinding:} Use A* search on the grid to compute shortest paths. Cache results to avoid redundant computation.
+  \item \textbf{Scalability:} A picking list of 50 items requires 2500 distance matrix entries, each involving an A* search on the grid.
+  \item \textbf{Dynamic Updates:} New items may be added to the picking list mid-execution. The tour must be re-optimized incrementally.
+  \item \textbf{Multi-Robot (Bonus):} Partition the picking list among multiple robots and plan collision-free paths.
+\end{itemize}
+
+\section{Sample Input}
+
+\begin{lstlisting}[style=json]
+{
+  "warehouse": {
+    "width": 12,
+    "height": 8,
+    "grid": [
+      "............",
+      ".####.####..",
+      ".####.####..",
+      "............",
+      ".####.####..",
+      ".####.####..",
+      "............",
+      "H.........S."
+    ],
+    "legend": {
+      ".": "aisle",
+      "#": "shelf",
+      "H": "home",
+      "S": "station"
+    }
+  },
+  "picking_list": [
+    {"item_id": "item_01", "location": [1, 1]},
+    {"item_id": "item_02", "location": [5, 2]},
+    {"item_id": "item_03", "location": [7, 1]},
+    {"item_id": "item_04", "location": [1, 4]},
+    {"item_id": "item_05", "location": [8, 5]},
+    {"item_id": "item_06", "location": [3, 2]},
+    {"item_id": "item_07", "location": [9, 4]},
+    {"item_id": "item_08", "location": [2, 5]}
+  ]
+}
+\end{lstlisting}
+
+\vfill
+\noindent\rule{\textwidth}{0.4pt}
+{\small\textit{For full project requirements, STL restrictions, submission format, and grading criteria, refer to \textbf{base.pdf} (available on the \href{https://github.com/BestSithInEU/cse211-term-projects/releases}{Releases page}).}}

@@ -1,0 +1,55 @@
+\section{Problem Statement}
+
+Design and implement a network simulator that models packet routing, queue management, and congestion dynamics across a computer network. The network is modeled as a directed graph where nodes represent routers with finite packet queues and processing rates, and edges represent links with bandwidth and propagation delay. Your simulator must compute routing tables, simulate packet flow through the network, and demonstrate congestion phenomena such as queue buildup and packet drops.
+
+\section{Core Concepts}
+
+\begin{itemize}
+  \item \textbf{Routing Table:} Each router maintains a mapping from destination addresses to next-hop routers, computed using a distributed routing algorithm.
+  \item \textbf{Packet Queue:} Each router has a FIFO buffer with a maximum size. Incoming packets are enqueued for processing and forwarding.
+  \item \textbf{Bandwidth:} Each link can transmit a fixed number of packets per time unit, limiting the throughput between connected routers.
+  \item \textbf{Propagation Delay:} The time it takes for a packet to travel across a link, independent of bandwidth, representing physical signal propagation.
+  \item \textbf{Congestion:} When packet arrival rate exceeds processing or forwarding capacity, queues grow and eventually overflow, causing packet drops.
+\end{itemize}
+
+\section{Key Challenges}
+
+\begin{itemize}
+  \item \textbf{Routing Algorithm:} Implement a distance-vector or link-state routing algorithm to compute shortest-path routing tables at each router.
+  \item \textbf{Queue Simulation:} Simulate FIFO queues with tail-drop policy, where packets arriving at a full queue are discarded.
+  \item \textbf{Event-Driven Simulation:} Use a priority queue ordered by event time to process packet arrivals, departures, and link transmissions efficiently.
+  \item \textbf{Traffic Generation:} Model packet sources using Poisson arrival processes with configurable rates to create realistic traffic patterns.
+  \item \textbf{Topology Changes:} Simulate link failures and recoveries, triggering routing table recomputation and potential traffic rerouting.
+\end{itemize}
+
+\section{Sample Input}
+
+\begin{lstlisting}[style=json, caption={data/input\_sample.json}]
+{
+  "routers": [
+    {"id": "R1", "queue_capacity": 50, "processing_rate": 10},
+    {"id": "R2", "queue_capacity": 30, "processing_rate": 8},
+    {"id": "R3", "queue_capacity": 40, "processing_rate": 12},
+    {"id": "R4", "queue_capacity": 20, "processing_rate": 6}
+  ],
+  "links": [
+    {"from": "R1", "to": "R2", "bandwidth": 5, "delay": 2},
+    {"from": "R2", "to": "R1", "bandwidth": 5, "delay": 2},
+    {"from": "R1", "to": "R3", "bandwidth": 10, "delay": 1},
+    {"from": "R3", "to": "R1", "bandwidth": 10, "delay": 1},
+    {"from": "R2", "to": "R4", "bandwidth": 3, "delay": 4},
+    {"from": "R4", "to": "R2", "bandwidth": 3, "delay": 4},
+    {"from": "R3", "to": "R4", "bandwidth": 7, "delay": 3},
+    {"from": "R4", "to": "R3", "bandwidth": 7, "delay": 3}
+  ],
+  "traffic": [
+    {"source": "R1", "destination": "R4", "packets": 100, "start_time": 0},
+    {"source": "R2", "destination": "R3", "packets": 50, "start_time": 5},
+    {"source": "R3", "destination": "R1", "packets": 75, "start_time": 10}
+  ]
+}
+\end{lstlisting}
+
+\vfill
+\noindent\rule{\textwidth}{0.4pt}
+{\small\textit{For full project requirements, STL restrictions, submission format, and grading criteria, refer to \textbf{base.pdf} (available on the \href{https://github.com/BestSithInEU/cse211-term-projects/releases}{Releases page}).}}

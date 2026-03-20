@@ -1,0 +1,214 @@
+% sections/06-data-directory.tex — Data Directory and Input Handling
+
+\section{Data Directory and Input Handling}
+
+% ── Requirement ──
+\subsection{Requirement}
+
+Your project must read input data from a \filepath{data/} directory. This directory should contain multiple input files covering different test scenarios, edge cases, and performance benchmarks.
+
+% ── Directory Structure ──
+\subsection{Directory Structure}
+
+\begin{lstlisting}[style=tree]
+data/
+|-- input_default.json ......... Default/primary input data
+|-- input_small.yaml ........... Small input for quick testing
+|-- input_large.csv ............ Large input for stress testing
+|-- edge_case_empty.xml ........ Empty input edge case
+|-- edge_case_single.toml ...... Single element edge case
+|-- edge_case_max.txt .......... Maximum values edge case
+|-- test_approach_1.yaml ....... Specific algorithm test
+|-- test_stress.json ........... Stress test scenario
+|-- test_invalid.json .......... Invalid input for error handling
+|-- expected_output.json ....... Expected results for verification
++-- benchmark_large.bin ........ Binary data for performance tests
+\end{lstlisting}
+
+% ── File Naming Convention ──
+\subsection{File Naming Convention}
+
+\begin{center}
+\begin{tabular}{l l}
+\hline
+\rowcolor{tableheader} \textbf{Prefix} & \textbf{Purpose} \\
+\hline
+\code{input\_*} & Regular input data \\
+\code{edge\_case\_*} & Edge case testing \\
+\code{test\_*} & Specific test scenarios \\
+\code{benchmark\_*} & Performance benchmarking \\
+\code{expected\_*} & Expected output for verification \\
+\code{sample\_*} & Example/demo data \\
+\hline
+\end{tabular}
+\end{center}
+
+% ── Supported Formats ──
+\subsection{Supported Formats}
+
+Your project may use any of the following data formats:
+
+\begin{itemize}
+  \item \textbf{JSON} --- most common, well-supported in \cpp
+  \item \textbf{YAML} --- human-readable, good for configuration
+  \item \textbf{CSV} --- tabular data, simple to parse
+  \item \textbf{XML} --- structured data with schema support
+  \item \textbf{Plain text} --- simple key-value or line-based formats
+  \item \textbf{Binary} --- for performance benchmarking with large datasets
+\end{itemize}
+
+\begin{notebox}[Format Flexibility]
+You are free to choose any file format(s) for your test data. The examples in this document demonstrate various formats to show possibilities, but you may:
+\begin{itemize}
+  \item Use a single format (e.g., all JSON) for simplicity
+  \item Mix formats based on what suits each test case
+  \item Choose based on your parsing library preferences
+\end{itemize}
+Pick what works best for your project---consistency and clarity matter more than format variety.
+\end{notebox}
+
+% ── External Libraries ──
+\subsection{External Libraries}
+
+You may use external libraries for file parsing. All dependencies must be documented and installable via \makedeps.
+
+\subsubsection{Recommended Libraries}
+
+\begin{itemize}
+  \item \textbf{JSON:}
+    \begin{itemize}
+      \item \href{https://github.com/nlohmann/json}{nlohmann/json} --- header-only, easy to use
+      \item \href{https://github.com/Tencent/rapidjson}{RapidJSON} --- high performance
+      \item \href{https://github.com/simdjson/simdjson}{simdjson} --- fastest JSON parser
+    \end{itemize}
+  \item \textbf{YAML:}
+    \begin{itemize}
+      \item \href{https://github.com/jbeder/yaml-cpp}{yaml-cpp}
+    \end{itemize}
+  \item \textbf{CSV:}
+    \begin{itemize}
+      \item \href{https://github.com/vincentlaucsb/csv-parser}{csv-parser}
+      \item \href{https://github.com/ben-strasser/fast-cpp-csv-parser}{Fast C++ CSV Parser}
+    \end{itemize}
+\end{itemize}
+
+% ── Dependency Installation ──
+\subsection{Dependency Installation}
+
+Your \makedeps{} target should handle downloading external libraries:
+
+\begin{lstlisting}[style=makefile]
+deps:
+	@echo "Installing dependencies..."
+	mkdir -p libs
+	wget -q -O libs/json.hpp \
+	  https://github.com/nlohmann/json/releases/latest/download/json.hpp
+	# For system packages: sudo apt-get install libyaml-cpp-dev
+\end{lstlisting}
+
+For CMake projects, use \code{FetchContent}:
+
+\begin{lstlisting}[style=cpp]
+# CMakeLists.txt
+include(FetchContent)
+
+FetchContent_Declare(
+    json
+    URL https://github.com/nlohmann/json/releases/latest/download/json.hpp
+    DOWNLOAD_NO_EXTRACT TRUE
+)
+FetchContent_MakeAvailable(json)
+
+target_link_libraries(${PROJECT_NAME} PRIVATE nlohmann_json::nlohmann_json)
+\end{lstlisting}
+
+% ── Input Handling Best Practices ──
+\subsection{Input Handling Best Practices}
+
+\begin{itemize}
+  \item \textbf{Validate all input} before processing
+  \item \textbf{Handle missing or malformed files} gracefully with clear error messages
+  \item \textbf{Support command-line arguments} for specifying input files
+  \item \textbf{Log errors} with context (file name, line number, expected format)
+\end{itemize}
+
+\begin{lstlisting}[style=cpp]
+int main(int argc, char* argv[]) {
+    std::string inputFile = "data/input_default.json";
+
+    if (argc > 1) {
+        inputFile = argv[1];
+    }
+
+    // ... load and process inputFile
+}
+\end{lstlisting}
+
+% ── Test Data Examples ──
+\subsection{Test Data Examples}
+
+Below are brief structural examples. See \textbf{Appendix A} for extended themed examples.
+
+\subsubsection{Basic Structure (JSON)}
+
+\begin{lstlisting}[style=json]
+{
+    "nodes": [
+        {"id": 1, "label": "A"},
+        {"id": 2, "label": "B"},
+        {"id": 3, "label": "C"}
+    ],
+    "edges": [
+        {"from": 1, "to": 2, "weight": 5},
+        {"from": 2, "to": 3, "weight": 3},
+        {"from": 1, "to": 3, "weight": 10}
+    ]
+}
+\end{lstlisting}
+
+\subsubsection{Edge Cases}
+
+Empty input:
+
+\begin{lstlisting}[style=json]
+{
+    "nodes": [],
+    "edges": []
+}
+\end{lstlisting}
+
+Single node:
+
+\begin{lstlisting}[style=json]
+{
+    "nodes": [{"id": 1, "label": "A"}],
+    "edges": []
+}
+\end{lstlisting}
+
+Maximum values:
+
+\begin{lstlisting}[style=json]
+{
+    "nodes": [
+        {"id": 2147483647, "label": "MAX"}
+    ],
+    "edges": [
+        {"from": 2147483647, "to": 2147483647, "weight": 2147483647}
+    ]
+}
+\end{lstlisting}
+
+\subsubsection{Expected Output}
+
+\begin{lstlisting}[style=json]
+{
+    "input_file": "data/input_default.json",
+    "expected": {
+        "shortest_path": ["A", "B", "C"],
+        "total_cost": 8
+    }
+}
+\end{lstlisting}
+
+See \textbf{Appendix A} for extended themed examples.
